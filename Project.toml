@@ -1,0 +1,7 @@
+name = "Aacgm"
+uuid = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
+authors = ["Beforerr <zzj956959688@gmail.com> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.10"
