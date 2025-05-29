@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "src/**"
+      - "test/**"
     tags: ["*"]
   pull_request:
   workflow_dispatch:
@@ -25,13 +26,17 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - "1.10"
-          - "1.11"
-          - "pre"
+          - "1"
+          - "lts"
         os:
           - ubuntu-latest
         arch:
           - x64
+        include:
+          - version: "pre"
+            os: ubuntu-latest
+            arch: x64
+            allow_failure: true
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
@@ -41,6 +46,6 @@ jobs:
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
       - uses: extractions/setup-just@v3
-      - name: Install LibAacgm.jl
-        run: just install && just install_lib test
+      - name: Install libaacgm
+        run: just install
       - uses: julia-actions/julia-runtest@v1

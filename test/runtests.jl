@@ -16,9 +16,9 @@ using TestItems, TestItemRunner
 end
 
 @testitem "AACGM_v2_Rylm Comparison" begin
-    using Aacgm: compute_harmonics!
+    using Aacgm: compute_harmonics!, compute_harmonics
     using Aacgm.SphericalHarmonics
-    using LibAacgm: AACGM_v2_Rylm
+    using LibAacgm: AACGM_v2_Rylm, AACGM_v2_Rylm!
     using Chairmarks
 
     colat = deg2rad(35)  # 45 degrees in radians
@@ -39,7 +39,7 @@ end
 
 
 @testitem "Coefficient Loading" begin
-    @info Base.summarysize(load_coefficients!(2029)) |> Base.format_bytes
+    @info Base.summarysize(set_coefficients!(2029)) |> Base.format_bytes
 end
 
 @testitem "JET" setup = [Share] begin
