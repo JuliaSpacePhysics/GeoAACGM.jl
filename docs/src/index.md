@@ -44,6 +44,7 @@ dt = DateTime(2029, 3, 22, 3, 11)
 
 LibAacgm.AACGM_v2_SetDateTime(dt)
 c_result = LibAacgm.AACGM_v2_Convert(lat, lon, hgt, 0)
+set_coefficients!(dt)
 jl_result = geod2aacgm(lat, lon, hgt, dt)
 
 # Validation
