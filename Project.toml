@@ -1,7 +1,7 @@
 name = "Aacgm"
 uuid = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
 authors = ["Beforerr <zzj956959688@gmail.com> and contributors"]
-version = "1.0.0-DEV"
+version = "0.1.0"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -15,8 +15,8 @@ Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
 [compat]
 Dates = "1"
-Dictionaries = "0.4.5"
-LazyArrays = "2.6.1"
+Dictionaries = "0.4"
+LazyArrays = "2.6"
 LinearAlgebra = "1"
 PrecompileTools = "1.2"
 SphericalHarmonics = "0.1.19"
