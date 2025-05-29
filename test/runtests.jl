@@ -3,9 +3,11 @@ using TestItems, TestItemRunner
 @run_package_tests filter = ti -> !(:skipci in ti.tags)
 
 @testsnippet Share begin
-    using LibAacgm
+    using Pkg
     using Dates
     using Chairmarks
+    Pkg.develop(PackageSpec(path="../LibAacgm"))
+    using LibAacgm
 
     yr, mo, dy, hr, mt, sc = 2029, 3, 22, 3, 11, 0
     dt = DateTime(yr, mo, dy, hr, mt, sc)
@@ -15,7 +17,7 @@ using TestItems, TestItemRunner
     _approx(a, b; kw...) = all(isapprox.(a, b; kw...))
 end
 
-@testitem "AACGM_v2_Rylm Comparison" begin
+@testitem "AACGM_v2_Rylm Comparison" setup = [Share] begin
     using Aacgm: compute_harmonics!, compute_harmonics
     using Aacgm.SphericalHarmonics
     using LibAacgm: AACGM_v2_Rylm, AACGM_v2_Rylm!
@@ -39,6 +41,7 @@ end
 
 
 @testitem "Coefficient Loading" begin
+    using Dates
     @info Base.summarysize(set_coefficients!(Date(2029))) |> Base.format_bytes
 end
 
