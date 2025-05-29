@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-    tags: ['*']
+    tags: ["*"]
   pull_request:
   workflow_dispatch:
 concurrency:
@@ -23,9 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.10'
-          - '1.11'
-          - 'pre'
+          - "1.10"
+          - "1.11"
+          - "pre"
         os:
           - ubuntu-latest
         arch:
@@ -38,4 +38,7 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
+      - uses: extractions/setup-just@v3
+      - name: Install LibAacgm.jl
+        run: just install && just install_lib test
       - uses: julia-actions/julia-runtest@v1

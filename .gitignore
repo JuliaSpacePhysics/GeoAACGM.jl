@@ -1,1 +1,5 @@
-/Manifest*.toml
+Manifest*.toml
+data
+*.tar
+*.so
+test_aacgm

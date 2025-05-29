@@ -1,0 +1,10 @@
+name = "LibAacgm"
+uuid = "ee618599-6bd6-46be-807e-a23e17005c2b"
+authors = ["Beforerr <zzj956959688@gmail.com> and contributors"]
+version = "0.0.1"
+
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[compat]
+julia = "1.10"
