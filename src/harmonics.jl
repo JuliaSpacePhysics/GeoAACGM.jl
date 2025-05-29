@@ -10,18 +10,18 @@ using SphericalHarmonics: RealHarmonics
 
 const S_cached = SphericalHarmonics.cache(SHORDER, RealHarmonics())
 
-function apply_aacgm_normalization!(Ylms, order)
+function apply_aacgm_normalization!(Yₗₘ, order)
     for l in 0:order
         k0 = l * (l + 1) + 1
-        for m in 1:l
-            @inbounds Ylms[k0+m] /= sqrt(2)
-        end
         for m in -l:-1
-            sign_factor = isodd(-m) ? 1 : -1
-            @inbounds Ylms[k0+m] *= sign_factor / sqrt(2)
+            sign_factor = ifelse(isodd(-m), 1, -1)
+            @inbounds Yₗₘ[k0+m] *= sign_factor / sqrt(2)
+        end
+        for m in 1:l
+            @inbounds Yₗₘ[k0+m] /= sqrt(2)
         end
     end
-    Ylms
+    Yₗₘ
 end
 
 """
