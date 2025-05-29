@@ -44,13 +44,6 @@ end
 
 const coefs_dict = dictionary(year => load_coefficients(year) for year in 1590:5:2030)
 
-function set_coefficients!(year::Int)
-    g2a, a2g = coefs_dict[year]
-    geo2aacgm_coefs[] = g2a
-    aacgm2geo_coefs[] = a2g
-    return g2a, a2g
-end
-
 function get_coefficients(time::T) where T<:AbstractTime
     epoch_year = (year(time) ÷ 5) * 5
     next_epoch = epoch_year + 5

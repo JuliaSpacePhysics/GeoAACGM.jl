@@ -25,7 +25,7 @@ include("constants.jl")
 include("harmonics.jl")
 include("cotrans.jl")
 include("coefs.jl")
-include("precompile.jl")
+include("workload.jl")
 
 export geoc2aacgm, geod2aacgm, geod2geoc
 end

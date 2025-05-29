@@ -39,12 +39,12 @@ end
 
 
 @testitem "Coefficient Loading" begin
-    @info Base.summarysize(set_coefficients!(2029)) |> Base.format_bytes
+    @info Base.summarysize(set_coefficients!(Date(2029))) |> Base.format_bytes
 end
 
 @testitem "JET" setup = [Share] begin
     using JET
-    @test_call geod2aacgm(45.5, -23.5, 1000, dt)
+    @test_call Aacgm.workload()
 end
 
 @testitem "Aqua" begin
