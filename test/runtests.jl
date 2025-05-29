@@ -3,8 +3,6 @@ using TestItems, TestItemRunner
 @run_package_tests filter = ti -> !(:skipci in ti.tags)
 
 @testsnippet Share begin
-    using Pkg
-    Pkg.develop(path="../LibAacgm")
     using LibAacgm
     using Dates
     using Chairmarks
@@ -18,17 +16,15 @@ using TestItems, TestItemRunner
 end
 
 @testitem "AACGM_v2_Rylm Comparison" begin
-    # Test parameters - same as in the C test
+    using Aacgm: compute_harmonics!
     using Aacgm.SphericalHarmonics
-    using LibAacgm
+    using LibAacgm: AACGM_v2_Rylm
     using Chairmarks
 
     colat = deg2rad(35)  # 45 degrees in radians
     lon = deg2rad(30)    # 30 degrees in radians
     order = 10
-
-    SHType = SphericalHarmonics.RealHarmonics()
-    S = SphericalHarmonics.cache(order, SHType)
+    S = SphericalHarmonics.cache(order, SphericalHarmonics.RealHarmonics())
 
     # Call our Julia implementation
     julia_results = compute_harmonics!(S, colat, lon, order)
@@ -48,8 +44,7 @@ end
 
 @testitem "JET" setup = [Share] begin
     using JET
-    load_coefficients!(dt)
-    @test_call geoc2aacgm(45.5, -23.5, 1000)
+    @test_call geod2aacgm(45.5, -23.5, 1000, dt)
 end
 
 @testitem "Aqua" begin
