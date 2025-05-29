@@ -47,5 +47,5 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
       - uses: extractions/setup-just@v3
       - name: Install libaacgm
-        run: just install
+        run: just install && just install_lib test
       - uses: julia-actions/julia-runtest@v1
