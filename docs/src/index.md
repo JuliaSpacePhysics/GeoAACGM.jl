@@ -25,6 +25,10 @@ Order = [:function]
 
 # Validation and Benchmark
 
+!!! note
+
+    It is preferable to use the `geo2aacgm.(glats, glons, hights, times)` interface compared to manually setting the coefficients with `set_coefficients!` and then using `geo2aacgm(glat, glon, hight)`. The former is simpler and ensures accuracy with negligible performance loss due to lazy interpolation.
+
 ## Single Time Conversion
 
 ```@example share
@@ -53,8 +57,8 @@ The slight discrepancy in the output arises from Julia’s use of a more precise
 
 ## Multiple Time Conversion
 
-When times are close to each other, it may be faster to set the time just once and perform the conversion multiple times.
-The results are very close to each other.
+When times are close to each other, it may be faster to set the time just once and perform the coordinate transformation multiple times.
+
 
 ```@example share
 n = 10

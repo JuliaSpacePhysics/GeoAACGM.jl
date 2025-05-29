@@ -9,7 +9,7 @@ Fast and accurate.
 ## References
 
 - [AACGM-V2](https://superdarn.thayer.dartmouth.edu/aacgm.html)
-- [aacgmv2](https://aacgmv2.readthedocs.io/en/latest/reference/aacgmv2.html):
+- [aacgmv2](https://aacgmv2.readthedocs.io/en/latest):
     Python library for AACGM-v2 magnetic coordinates [GitHub](https://github.com/aburrell/aacgmv2)
 """
 module Aacgm
