@@ -1,13 +1,19 @@
+function check_height(height)
+    height < 0 && @warn "Coordinate transformations are not intended for altitudes < 0 km: $height"
+    height > MAXALT && @error "Coefficients are not valid for altitudes above $MAXALT km: $height"
+end
+
 """
     geoc2aacgm(lat, lon, height, time, ...) -> (mlat, mlon, r)
-    geoc2aacgm(lat, lon, height, ...) -> (mlat, mlon, r)
+    geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], ...) -> (mlat, mlon, r)
 
-Convert between geocentric `(lat, lon, height)` and AACGM coordinates `(mlat, mlon, r)`
+Convert between geocentric `(lat, lon, height [km])` and AACGM coordinates `(mlat, mlon, r)`
 using spherical harmonic expansion.
 
 Similar to the C function `convert_geo_coord_v2`.
 """
 function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER)
+    check_height(height)
     # Prepare input coordinates
     T = promote_type(typeof(lat), typeof(lon), typeof(height))
     lon_rad = deg2rad(lon)
