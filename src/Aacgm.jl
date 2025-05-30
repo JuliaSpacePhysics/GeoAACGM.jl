@@ -28,4 +28,5 @@ include("coefs.jl")
 include("workload.jl")
 
 export geoc2aacgm, geod2aacgm, geod2geoc
+export geo2aacgm, cart2sph
 end

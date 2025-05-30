@@ -7,8 +7,8 @@ end
     geoc2aacgm(lat, lon, height, time, ...) -> (mlat, mlon, r)
     geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], ...) -> (mlat, mlon, r)
 
-Convert between geocentric `(lat, lon, height [km])` and AACGM coordinates `(mlat, mlon, r)`
-using spherical harmonic expansion.
+Convert between geocentric `(lat [deg], lon [deg], height [km])` and AACGM coordinates
+`(mlat [deg], mlon [deg], r [Earth radii])` using spherical harmonic expansion.
 
 Similar to the C function `convert_geo_coord_v2`.
 """
@@ -88,6 +88,42 @@ function geod2geoc(lat, lon, alt)
     colat = acosd(ct * cd - st * sd)
     return r_RE, colat, lon
 end
+
+
+"""
+    cart2sph(x, y, z)
+
+Convert `(x, y, z)` in Cartesian coordinate to `(r, lati, longi)` in spherical coordinate.
+"""
+function cart2sph(x, y, z)
+    sq = x^2 + y^2
+    r = sqrt(sq + z^2)
+    if sq == 0.0
+        longi = 0.0
+        lati = ifelse(z < 0.0, -90.0, 90.0)
+    else
+        # sqrt of x-y plane projection
+        ρ = sqrt(sq)
+        longi = atand(y, x)
+        lati = 90.0 - atand(ρ, z)
+        # wrap longitude into [0,360)
+        longi = ifelse(longi < 0.0, longi + 360.0, longi)
+    end
+    return r, lati, longi
+end
+
+"""
+    geo2aacgm(x, y, z, time)
+
+Convert `(x [km], y [km], z [km])` in **geocentric geographic** (cartesian) coordinates to
+`(lat [deg], lon [deg], height [km])` in AACGM coordinate.
+"""
+function geo2aacgm(x, y, z, time)
+    r, lati, longi = cart2sph(x, y, z)
+    return geoc2aacgm(lati, longi, r - RE, time)
+end
+
+geo2aacgm(𝐫, time) = geo2aacgm(𝐫[1], 𝐫[2], 𝐫[3], time)
 
 
 """
