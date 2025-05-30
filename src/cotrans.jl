@@ -12,7 +12,7 @@ Convert between geocentric `(lat [deg], lon [deg], height [km])` and AACGM coord
 
 Similar to the C function `convert_geo_coord_v2`.
 """
-function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER)
+function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER; verbose=false)
     check_height(height)
     # Prepare input coordinates
     T = promote_type(typeof(lat), typeof(lon), typeof(height))
@@ -29,8 +29,8 @@ function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER)
 
     fac = x^2 + y^2
     if fac > 1
-        error("Fac > 1, we are in the forbidden region where solution is undefined")
-        return NaN, NaN
+        verbose && @warn "Fac > 1, we are in the forbidden region where solution is undefined"
+        return T(NaN), T(NaN), T(NaN)
     end
     ztmp = sqrt(1 - fac)
 
@@ -116,7 +116,7 @@ end
     geo2aacgm(x, y, z, time)
 
 Convert `(x [km], y [km], z [km])` in **geocentric geographic** (cartesian) coordinates to
-`(lat [deg], lon [deg], height [km])` in AACGM coordinate.
+`(mlat [deg], mlon [deg], r [Earth radii])` in AACGM coordinate.
 """
 function geo2aacgm(x, y, z, time)
     r, lati, longi = cart2sph(x, y, z)
