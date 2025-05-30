@@ -42,16 +42,20 @@ function load_coefficients(year)
     return g2a_data, a2g_data
 end
 
-const coefs_dict = dictionary(year => load_coefficients(year) for year in 1590:5:2030)
+const coefs_lookup = let
+    coefs = dictionary(year => load_coefficients(year) for year in 1590:5:2030)
+    dictionary(i => (coefs[i]..., (coefs[i+5] .- coefs[i])...) for i in 1590:5:2025)
+end
 
 function get_coefficients(time::T) where T<:AbstractTime
     epoch_year = (year(time) ÷ 5) * 5
     next_epoch = epoch_year + 5
-    g2a1, a2g1 = coefs_dict[epoch_year]
-    g2a2, a2g2 = coefs_dict[next_epoch]
+    g2a0, a2g0, dg2a, da2g = coefs_lookup[epoch_year]
     t0, tf = T(epoch_year), T(next_epoch)
     ratio = (time - t0) / (tf - t0)
-    return @~(g2a1 .+ (g2a2 .- g2a1) .* ratio), @~(a2g1 .+ (a2g2 .- a2g1) .* ratio)
+    g2a = @~ @. dg2a * ratio + g2a0
+    a2g = @~ @. da2g * ratio + a2g0
+    return g2a, a2g
 end
 
 function set_coefficients!(time::T) where T<:AbstractTime

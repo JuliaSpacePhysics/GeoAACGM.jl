@@ -43,7 +43,7 @@ end
 
 
 function geoc2aacgm(lat, lon, height, time::AbstractTime, order=SHORDER)
-    g2a, _ = get_coefficients(time)
+    g2a = get_coefficients(time)[1]
     return geoc2aacgm(lat, lon, height, g2a, order)
 end
 
