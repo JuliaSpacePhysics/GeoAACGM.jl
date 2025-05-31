@@ -17,6 +17,22 @@ We support coordinate transformations between the following coordinate systems:
 
 - **Geodetic**: `(lat [deg], lon [deg], height [km])`, based on the WGS84 ellipsoid model of the Earth.
 
+with [`geoc2aacgm`](@ref), [`geod2aacgm`](@ref), [`geod2geoc`](@ref) functions.
+
+## Examples
+
+```julia
+using GeoAACGM, Dates
+
+dt = DateTime(2029, 3, 22, 3, 11);
+glat, glon, height = 45.5, -23.5, 1135;
+
+# Convert geocentric to AACGM
+mlat, mlon, r = geoc2aacgm(glat, glon, height, dt)
+
+# Convert geodetic to AACGM
+mlat, mlon, r = geod2aacgm(glat, glon, height, dt)
+```
 
 ## References
 

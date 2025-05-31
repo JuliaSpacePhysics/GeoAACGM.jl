@@ -4,9 +4,9 @@
 GeoAACGM
 ```
 
-# API Reference
+## API Reference
 
-## Exported functions
+### Exported functions
 
 ```@autodocs
 Modules = [GeoAACGM]
@@ -14,7 +14,7 @@ Private = false
 Order = [:function]
 ```
 
-## Private functions
+### Private functions
 
 ```@autodocs
 Modules = [GeoAACGM]
@@ -23,13 +23,13 @@ Order = [:function]
 ```
 
 
-# Validation and Benchmark
+## Validation and Benchmark
 
 !!! note
 
     It is preferable to use the `geo2aacgm.(glats, glons, hights, times)` interface compared to manually setting the coefficients with `set_coefficients!` and then using `geo2aacgm(glat, glon, hight)`. The former is simpler and ensures accuracy with negligible performance loss due to lazy interpolation.
 
-## Single Time Conversion
+### Single Time Conversion
 
 ```@example share
 using GeoAACGM, LibAACGM
@@ -56,7 +56,7 @@ jl_result = geod2aacgm(lat, lon, hgt, dt)
 The Julia implementation yields results comparable to the C implementation but runs approximately twice as fast (for preset coefficients). 
 The slight discrepancy in the output arises from Julia’s use of a more precise interpolation of the coefficients compared to that used in the C version.
 
-## Multiple Time Conversion
+### Multiple Time Conversion
 
 When times are close to each other, it may be faster to set the time just once and perform the coordinate transformation multiple times.
 
