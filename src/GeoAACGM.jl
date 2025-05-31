@@ -2,9 +2,21 @@
     GeoAACGM
 
 A pure Julia implementation of the Altitude-Adjusted Corrected Geomagnetic (AACGM)
-coordinate system.
+coordinate system to trace magnetic field lines for ionospheric and magnetospheric
+research.
 
 Simple, fast, and accurate.
+
+We support coordinate transformations between the following coordinate systems:
+
+- **AACGM**: `(mlat [deg], mlon [deg], r [Earth radii])`,
+    based on the [IGRF-14 model](https://www.ncei.noaa.gov/products/international-geomagnetic-reference-field) (1900-2030)
+    and [GUFM1 model](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002RG000115) (1590-1900).
+
+- **Geocentric**: `(lat [deg], lon [deg], height [km])`
+
+- **Geodetic**: `(lat [deg], lon [deg], height [km])`, based on the WGS84 ellipsoid model of the Earth.
+
 
 ## References
 
@@ -28,5 +40,5 @@ include("coefs.jl")
 include("workload.jl")
 
 export geoc2aacgm, geod2aacgm, geod2geoc
-export geo2aacgm, cart2sph
+export geo2aacgm
 end

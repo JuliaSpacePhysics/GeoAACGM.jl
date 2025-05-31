@@ -48,15 +48,15 @@ function geoc2aacgm(lat, lon, height, time::AbstractTime, order=SHORDER)
 end
 
 """
-    geod2aacgm(lat, lon, height)
+    geod2aacgm(lat, lon, height, time)
 
-Convert geodetic coordinates to AACGM coordinates.
+Convert geodetic coordinates `(lat [deg], lon [deg], height [km])`
+to AACGM coordinates `(mlat [deg], mlon [deg], r [Earth radii])`.
 
 Similar to the C function `AACGM_v2_Convert`.
 """
 function geod2aacgm(lat, lon, height, time...)
-    r_RE, colat, lon = geod2geoc(lat, lon, height)
-    return geoc2aacgm(90 - colat, lon, (r_RE - 1) * RE, time...)
+    return geoc2aacgm(geod2geoc(lat, lon, height)..., time...)
 end
 
 
@@ -84,9 +84,8 @@ function geod2geoc(lat, lon, alt)
     cd = (alt + rho) / r
     sd = EARTH_A2_B2_DIFF / rho * ct * st / r
 
-    r_RE = r / RE
-    colat = acosd(ct * cd - st * sd)
-    return r_RE, colat, lon
+    lat = 90 - acosd(ct * cd - st * sd)
+    return lat, lon, r - RE
 end
 
 """
