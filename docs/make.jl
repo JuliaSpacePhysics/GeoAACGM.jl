@@ -1,12 +1,12 @@
 using Documenter
-using Aacgm
+using GeoAACGM
 
-DocMeta.setdocmeta!(Aacgm, :DocTestSetup, :(using Aacgm; using PrettyPrinting); recursive=true)
+DocMeta.setdocmeta!(GeoAACGM, :DocTestSetup, :(using GeoAACGM; using PrettyPrinting); recursive=true)
 
 makedocs(
-    sitename="Aacgm.jl",
+    sitename="GeoAACGM.jl",
     format=Documenter.HTML(),
-    modules=[Aacgm],
+    modules=[GeoAACGM],
     pages=[
         "Home" => "index.md",
     ],
@@ -15,5 +15,5 @@ makedocs(
 )
 
 deploydocs(
-    repo="github.com/Beforerr/Aacgm.jl",
+    repo="github.com/Beforerr/GeoAACGM.jl",
 )

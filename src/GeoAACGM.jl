@@ -1,10 +1,10 @@
 """
-    Aacgm
+    GeoAACGM
 
 A pure Julia implementation of the Altitude-Adjusted Corrected Geomagnetic (AACGM)
 coordinate system.
 
-Fast and accurate.
+Simple, fast, and accurate.
 
 ## References
 
@@ -12,7 +12,7 @@ Fast and accurate.
 - [aacgmv2](https://aacgmv2.readthedocs.io/en/latest):
     Python library for AACGM-v2 magnetic coordinates [GitHub](https://github.com/aburrell/aacgmv2)
 """
-module Aacgm
+module GeoAACGM
 using Dates
 using Dates: AbstractTime
 using Dictionaries: dictionary

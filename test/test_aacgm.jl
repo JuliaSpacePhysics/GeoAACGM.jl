@@ -19,7 +19,7 @@
 end
 
 @testitem "geod2geoc" setup = [Share] begin
-    using LibAacgm
+    using LibAACGM
     lat = 45.5
     lon = -23.5
     hgt = 1135
@@ -37,7 +37,7 @@ end
 
 
 @testitem "geoc2aacgm - Validation" setup = [Share] begin
-    using LibAacgm
+    using LibAACGM
     lat = 45.5
     lon = -23.5
     hgt = 1000 + 10 * rand()

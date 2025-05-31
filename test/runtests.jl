@@ -6,8 +6,8 @@ using TestItems, TestItemRunner
     using Pkg
     using Dates
     using Chairmarks
-    Pkg.develop(PackageSpec(path="../LibAacgm"))
-    using LibAacgm
+    Pkg.develop(PackageSpec(path="../LibAACGM"))
+    using LibAACGM
 
     yr, mo, dy, hr, mt, sc = 2029, 3, 22, 3, 11, 0
     dt = DateTime(yr, mo, dy, hr, mt, sc)
@@ -18,9 +18,9 @@ using TestItems, TestItemRunner
 end
 
 @testitem "AACGM_v2_Rylm Comparison" setup = [Share] begin
-    using Aacgm: compute_harmonics!, compute_harmonics
-    using Aacgm.SphericalHarmonics
-    using LibAacgm: AACGM_v2_Rylm, AACGM_v2_Rylm!
+    using GeoAACGM: compute_harmonics!, compute_harmonics
+    using GeoAACGM.SphericalHarmonics
+    using LibAACGM: AACGM_v2_Rylm, AACGM_v2_Rylm!
     using Chairmarks
 
     colat = deg2rad(35)  # 45 degrees in radians
@@ -47,10 +47,10 @@ end
 
 @testitem "JET" setup = [Share] begin
     using JET
-    @test_call Aacgm.workload()
+    @test_call GeoAACGM.workload()
 end
 
 @testitem "Aqua" begin
     using Aqua
-    Aqua.test_all(Aacgm)
+    Aqua.test_all(GeoAACGM)
 end

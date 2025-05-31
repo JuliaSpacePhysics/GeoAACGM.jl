@@ -1,7 +1,7 @@
 """
 Wrapper for the AACGM-v2 C library.
 """
-module LibAacgm
+module LibAACGM
 
 using Dates
 const SHORDER = 10

@@ -1,7 +1,7 @@
 [deps]
-Aacgm = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
+GeoAACGM = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
 Chairmarks = "0ca39b1e-fe0b-4e98-acfc-b1656634c4de"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
-LibAacgm = "ee618599-6bd6-46be-807e-a23e17005c2b"
+LibAACGM = "ee618599-6bd6-46be-807e-a23e17005c2b"
 PrettyPrinting = "54e16d92-306c-5ea0-a30b-337be88ac337"

@@ -1,7 +1,7 @@
-# Aacgm.jl
+# GeoAACGM.jl
 
 ```@docs
-Aacgm
+GeoAACGM
 ```
 
 # API Reference
@@ -9,7 +9,7 @@ Aacgm
 ## Exported functions
 
 ```@autodocs
-Modules = [Aacgm]
+Modules = [GeoAACGM]
 Private = false
 Order = [:function]
 ```
@@ -17,7 +17,7 @@ Order = [:function]
 ## Private functions
 
 ```@autodocs
-Modules = [Aacgm]
+Modules = [GeoAACGM]
 Public = false
 Order = [:function]
 ```
@@ -32,7 +32,7 @@ Order = [:function]
 ## Single Time Conversion
 
 ```@example share
-using Aacgm, LibAacgm
+using GeoAACGM, LibAACGM
 using Dates
 using Test, Chairmarks
 
@@ -42,15 +42,15 @@ is_approx_v(x, y; kw...) = length(x) == 1 ? isapprox(x, y; kw...) : all(is_appro
 lat, lon, hgt = 45.5, -23.5, 1135
 dt = DateTime(2029, 3, 22, 3, 11)
 
-LibAacgm.AACGM_v2_SetDateTime(dt)
-c_result = LibAacgm.AACGM_v2_Convert(lat, lon, hgt, 0)
+LibAACGM.AACGM_v2_SetDateTime(dt)
+c_result = LibAACGM.AACGM_v2_Convert(lat, lon, hgt, 0)
 set_coefficients!(dt)
 jl_result = geod2aacgm(lat, lon, hgt, dt)
 
 # Validation
 @assert is_approx_v(jl_result, c_result, atol=1e-4)
 # Benchmark
-@b geod2aacgm(lat, lon, hgt, dt), geod2aacgm(lat, lon, hgt), LibAacgm.AACGM_v2_Convert(lat, lon, hgt, 0)
+@b geod2aacgm(lat, lon, hgt, dt), geod2aacgm(lat, lon, hgt), LibAACGM.AACGM_v2_Convert(lat, lon, hgt, 0)
 ```
 
 The Julia implementation yields results comparable to the C implementation but runs approximately twice as fast (for preset coefficients). 

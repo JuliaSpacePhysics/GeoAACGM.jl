@@ -4,12 +4,12 @@ install:
     export IGRF_COEFFS="$(pwd)/c_aacgm_v2.7/magmodel_1590-2025.txt"
     cd c_aacgm_v2.7
     gcc -fPIC -shared -o aacgmlib.so aacgmlib_v2.c astalglib.c igrflib.c mlt_v2.c rtime.c -lm
-    install aacgmlib.so ../LibAacgm/aacgmlib.so
+    install aacgmlib.so ../LibAACGM/aacgmlib.so
 
 install_lib project:
     #!/usr/bin/env -S julia --threads=auto --project={{project}}
     using Pkg; 
-    Pkg.develop([PackageSpec(path="."), PackageSpec(path="LibAacgm")]); 
+    Pkg.develop([PackageSpec(path="."), PackageSpec(path="LibAACGM")]); 
     Pkg.instantiate()
 
 test:

@@ -23,7 +23,7 @@ jobs:
       - uses: julia-actions/setup-julia@v2
       - uses: julia-actions/cache@v2
       - uses: extractions/setup-just@v3
-      - name: Install LibAacgm.jl
+      - name: Install LibAACGM.jl
         run: just install && just install_lib docs
       - name: Build and deploy
         env:
