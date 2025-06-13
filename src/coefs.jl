@@ -36,8 +36,8 @@ function load_coefficients(year)
     full_data = reshape(data, (AACGM_KMAX, NCOORD, POLYORD, 2))
 
     # Extract separate arrays for G2A and A2G conversions
-    g2a_data = full_data[:, :, :, 1]
-    a2g_data = full_data[:, :, :, 2]
+    g2a_data = FixedSizeArray(full_data[:, :, :, 1])
+    a2g_data = FixedSizeArray(full_data[:, :, :, 2])
 
     return g2a_data, a2g_data
 end
