@@ -4,8 +4,8 @@
 # AACGM_v2_LoadCoefs
 export get_coefficients, set_coefficients!
 
-const geo2aacgm_coefs = Ref{Array{Float64,3}}()
-const aacgm2geo_coefs = Ref{Array{Float64,3}}()
+const geo2aacgm_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
+const aacgm2geo_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
 
 """
     get_coefficient_path(year)
@@ -44,10 +44,12 @@ end
 
 const coefs_lookup = let
     coefs = dictionary(year => load_coefficients(year) for year in 1590:5:2030)
-    dictionary(i => (coefs[i]..., (coefs[i+5] .- coefs[i])...) for i in 1590:5:2025)
+    geo2aacgm_coefs[] = copy(coefs[1590][1])
+    aacgm2geo_coefs[] = copy(coefs[1590][2])
+    dictionary(i => (coefs[i]..., (coefs[i + 5] .- coefs[i])...) for i in 1590:5:2025)
 end
 
-function get_coefficients(time::T) where T<:AbstractTime
+function get_coefficients(time::T) where {T <: AbstractTime}
     epoch_year = (year(time) ÷ 5) * 5
     next_epoch = epoch_year + 5
     g2a0, a2g0, dg2a, da2g = coefs_lookup[epoch_year]
@@ -58,9 +60,9 @@ function get_coefficients(time::T) where T<:AbstractTime
     return g2a, a2g
 end
 
-function set_coefficients!(time::T) where T<:AbstractTime
+function set_coefficients!(time::T) where {T <: AbstractTime}
     g2a, a2g = get_coefficients(time)
-    geo2aacgm_coefs[] = Base.materialize(g2a)
-    aacgm2geo_coefs[] = Base.materialize(a2g)
+    geo2aacgm_coefs[] .= g2a
+    aacgm2geo_coefs[] .= a2g
     return geo2aacgm_coefs[], aacgm2geo_coefs[]
 end

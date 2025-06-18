@@ -6,7 +6,7 @@ using TestItems, TestItemRunner
     using Pkg
     using Dates
     using Chairmarks
-    Pkg.develop(PackageSpec(path="../LibAACGM"))
+    Pkg.develop(PackageSpec(path = "../LibAACGM"))
     using LibAACGM
 
     yr, mo, dy, hr, mt, sc = 2029, 3, 22, 3, 11, 0
@@ -14,7 +14,8 @@ using TestItems, TestItemRunner
     AACGM_v2_SetDateTime(dt)
     set_coefficients!(dt)
 
-    _approx(a, b; kw...) = all(isapprox.(a, b; kw...))
+    # Helper function to compare element-wise
+    _approx(a, b; kw...) = length(a) == 1 ? isapprox(a, b; kw...) : all(_approx.(a, b; kw...))
 end
 
 @testitem "AACGM_v2_Rylm Comparison" setup = [Share] begin
@@ -33,9 +34,10 @@ end
     c_results = AACGM_v2_Rylm(colat, lon, order)
     # Compare the results
     @test julia_results ≈ c_results
-    println.(@b compute_harmonics!($S, $colat, $lon, $order),
-    compute_harmonics($colat, $lon, $order),
-    AACGM_v2_Rylm!($c_results, $colat, $lon, $order)
+    println.(
+        @b compute_harmonics!($S, $colat, $lon, $order),
+            compute_harmonics($colat, $lon, $order),
+            AACGM_v2_Rylm!($c_results, $colat, $lon, $order)
     )
 end
 
