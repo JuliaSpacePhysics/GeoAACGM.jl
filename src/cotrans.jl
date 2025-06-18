@@ -1,6 +1,7 @@
 function check_height(height)
     height < 0 && @warn "Coordinate transformations are not intended for altitudes < 0 km: $height"
     height > MAXALT && @error "Coefficients are not valid for altitudes above $MAXALT km: $height"
+    return
 end
 
 """
@@ -12,7 +13,8 @@ Convert between geocentric `(lat [deg], lon [deg], height [km])` and AACGM coord
 
 Similar to the C function `convert_geo_coord_v2`.
 """
-function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER; verbose=false)
+function geoc2aacgm(lat, lon, height, coefs = geo2aacgm_coefs[]; order = nothing, verbose = false)
+    order = something(order, SHORDER)
     check_height(height)
     # Prepare input coordinates
     T = promote_type(typeof(lat), typeof(lon), typeof(height))
@@ -23,9 +25,9 @@ function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER; ve
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    r = MVector{3,T}(undef)
-    @tullio r[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
-    x, y, z = r
+    𝐫 = MVector{3, T}(undef)
+    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
+    x, y, z = 𝐫
 
     fac = x^2 + y^2
     if fac > 1
@@ -42,13 +44,81 @@ function geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], order=SHORDER; ve
 end
 
 
-function geoc2aacgm(lat, lon, height, time::AbstractTime, order=SHORDER)
+function geoc2aacgm(lat, lon, height, time::AbstractTime, args...; kws...)
     g2a = get_coefficients(time)[1]
-    return geoc2aacgm(lat, lon, height, g2a, order)
+    return geoc2aacgm(lat, lon, height, g2a, args...; kws...)
 end
 
 """
-    geod2aacgm(lat, lon, height, time)
+    aacgm2alt(hgt, lat)
+
+Transformation from AACGM to so-called 'at-altitude' coordinates.
+
+The purpose of this function is to scale the latitudes in such a way that there is no gap.
+The problem is that for non-zero altitudes (h) are range of latitudes near the equator
+    lie on dipole field lines that near reach the altitude h, and are therefore not accessible.
+This mapping closes the gap.
+
+    cos (lat_at-alt) = sqrt( (Re + h)/Re ) cos (lat_aacgm)
+
+Similar to the C function `AACGM_v2_CGM2Alt`.
+"""
+function aacgm2alt(hgt, lat)
+    r1 = cosd(lat)
+    ra = (hgt / RE + one(hgt)) * (r1 * r1)
+    ra = min(ra, one(hgt))
+    r1 = acos(sqrt(ra))
+    return sign(lat) * sign(r1) * rad2deg(r1)
+end
+
+
+"""
+    aacgm2geoc(mlat, mlon, r, time / coefs, order)
+
+Convert AACGM coordinates `(mlat [deg], mlon [deg], r [Earth radii])`
+to geocentric coordinates `(lat [deg], lon [deg], height [km])`.
+"""
+function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
+    order = something(order, SHORDER)
+    T = promote_type(typeof(mlat), typeof(mlon), typeof(r))
+
+    height = (r - 1) * RE
+    lon_rad = deg2rad(mlon)
+    lat_adj = aacgm2alt(height, mlat)
+    colat_rad = deg2rad(90 - lat_adj)
+
+    Yₗₘ = compute_harmonics!(S_cached, colat_rad, lon_rad, order)
+    alt_var = height / MAXALT
+    alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
+
+    𝐫 = MVector{3, T}(undef)
+    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
+    x, y, z = normalize(𝐫)
+
+    colat_out = acosd(z)
+    lat_out = 90 - colat_out
+    lon_out = atand(y, x)
+
+    return lat_out, lon_out, height
+end
+
+function aacgm2geoc(mlat, mlon, r, time::AbstractTime, args...; kws...)
+    a2g_coefs = get_coefficients(time)[2]
+    return aacgm2geoc(mlat, mlon, r, a2g_coefs, args...; kws...)
+end
+
+"""
+    aacgm2geod(mlat, mlon, r, time / coefs)
+
+Convert AACGM coordinates `(mlat [deg], mlon [deg], r [Earth radii])`
+to geodetic coordinates `(lat [deg], lon [deg], height [km])`.
+"""
+function aacgm2geod(mlat, mlon, r, args...; kws...)
+    return geoc2geod(aacgm2geoc(mlat, mlon, r, args...; kws...)...)
+end
+
+"""
+    geod2aacgm(lat, lon, height, time / coefs)
 
 Convert geodetic coordinates `(lat [deg], lon [deg], height [km])`
 to AACGM coordinates `(mlat [deg], mlon [deg], r [Earth radii])`.
@@ -125,33 +195,25 @@ geo2aacgm(𝐫, time) = geo2aacgm(𝐫[1], 𝐫[2], 𝐫[3], time)
 
 
 """
-    geoc2geod(lat_geoc, lon, r)
+    geoc2geod(lat, lon, r)
 
 Convert geocentric coordinates to geodetic coordinates.
 This is part of the coordinate transformation pipeline in AACGM-v2.
 
-# Arguments
-- `lat_geoc::Float64`: Geocentric latitude in degrees
-- `lon::Float64`: Longitude in degrees
-- `r::Float64`: Geocentric radius in Earth radii
-
 # Returns
 - `(lat_geod, lon, height)`: Geodetic coordinates (latitude in degrees, longitude in degrees, height in km)
 """
-function geoc2geod(lat_geoc::Float64, lon::Float64, r::Float64)
+function geoc2geod(lat, lon, hgt)
     # WGS84 ellipsoid parameters
     a = 6378.137  # semi-major axis in km
     f = 1 / 298.257223563  # flattening
     e2 = f * (2 - f)  # first eccentricity squared
 
-    lat_rad = deg2rad(lat_geoc)
-    lon_rad = deg2rad(lon)
-
     # Convert from spherical to Cartesian
-    r_km = r * RE
-    x = r_km * cos(lat_rad) * cos(lon_rad)
-    y = r_km * cos(lat_rad) * sin(lon_rad)
-    z = r_km * sin(lat_rad)
+    r_km = hgt + RE
+    x = r_km * cosd(lat) * cosd(lon)
+    y = r_km * cosd(lat) * sind(lon)
+    z = r_km * sind(lat)
 
     # Iterative conversion to geodetic
     p = sqrt(x^2 + y^2)
@@ -162,7 +224,7 @@ function geoc2geod(lat_geoc::Float64, lon::Float64, r::Float64)
         height = p / cos(lat_geod) - N
         lat_geod_new = atan(z / (p * (1 - e2 * N / (N + height))))
 
-        if abs(lat_geod_new - lat_geod) < 1e-12
+        if abs(lat_geod_new - lat_geod) < 1.0e-12
             break
         end
         lat_geod = lat_geod_new

@@ -56,6 +56,8 @@ include("cotrans.jl")
 include("coefs.jl")
 include("workload.jl")
 
-export geoc2aacgm, geod2aacgm, geod2geoc
+export geoc2aacgm, geod2aacgm
+export geod2geoc, geoc2geod
+export aacgm2geoc, aacgm2geod
 export geo2aacgm
 end
