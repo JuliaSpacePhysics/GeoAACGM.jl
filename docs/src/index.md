@@ -4,6 +4,13 @@
 GeoAACGM
 ```
 
+## Installation
+
+```julia
+using Pkg
+Pkg.add("GeoAACGM")
+```
+
 ## API Reference
 
 ### Exported functions

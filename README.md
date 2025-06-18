@@ -1,14 +1,23 @@
 # GeoAACGM
 
-[![Build Status](https://github.com/Beforerr/GeoAACGM.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/Beforerr/GeoAACGM.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://beforerr.github.io/GeoAACGM.jl)
+[![Build Status](https://github.com/JuliaSpacePhysics/GeoAACGM.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaSpacePhysics/GeoAACGM.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaspacephysics.github.io/GeoAACGM.jl)
 [![](https://img.shields.io/badge/%F0%9F%9B%A9%EF%B8%8F_tested_with-JET.jl-233f9a)](https://github.com/aviatesk/JET.jl)
 [![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
-[![Coverage](https://codecov.io/gh/Beforerr/GeoAACGM.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Beforerr/GeoAACGM.jl)
+[![Coverage](https://codecov.io/gh/JuliaSpacePhysics/GeoAACGM.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaSpacePhysics/GeoAACGM.jl)
 
 A pure Julia implementation of the Altitude-Adjusted Corrected Geomagnetic (AACGM) coordinate system. Fast and accurate.
 
 A Julia wrapper `LibAACGM` for the AACGM-v2 C library is also available in the [`LibAACGM`](./LibAACGM) directory, mainly used for testing and benchmarking.
+
+## Installation
+
+```julia
+using Pkg
+Pkg.add("GeoAACGM")
+```
+
+## Usage
 
 ```julia
 using GeoAACGM

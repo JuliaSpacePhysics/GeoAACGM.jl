@@ -15,6 +15,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/Beforerr/GeoAACGM.jl",
+    repo = "github.com/JuliaSpacePhysics/GeoAACGM.jl",
     push_preview = true
 )
