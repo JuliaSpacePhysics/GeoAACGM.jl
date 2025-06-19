@@ -5,3 +5,6 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
 LibAACGM = "ee618599-6bd6-46be-807e-a23e17005c2b"
 PrettyPrinting = "54e16d92-306c-5ea0-a30b-337be88ac337"
+
+[sources]
+LibAACGM = { path = "../LibAACGM" }

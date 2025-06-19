@@ -10,29 +10,37 @@ export AACGM_v2_SetDateTime, AACGM_v2_SetNow
 export AACGM_v2_Convert, AACGM_v2_Rylm, AACGM_v2_Rylm!
 export convert_geo_coord_v2
 
+function set_env()
+    AACGM_v2_DAT_PREFIX = joinpath(@__DIR__, "../../data/aacgm_coeffs-14/aacgm_coeffs-14-")
+    ENV["AACGM_v2_DAT_PREFIX"] = AACGM_v2_DAT_PREFIX
+    ENV["IGRF_COEFFS"] = joinpath(@__DIR__, "../../data/magmodel_1590-2025.txt")
+end
+
 # Find the library path
 function find_library(name="aacgmlib")
-    search_paths = [
-        joinpath(@__DIR__, ".."),
+    search_paths = (
+        dirname(@__DIR__),
         "/usr/local/lib",
         "/usr/lib"
-    ]
+    )
 
     # Try to find the library
     for path in search_paths
         aacgmlib = joinpath(path, "$name.so")
         isfile(aacgmlib) && return aacgmlib
     end
-    return name
+    # if not try to install it
+    @info "AACGM library not found, trying to install" run(`just install`)
+    for path in search_paths
+        aacgmlib = joinpath(path, "$name.so")
+        isfile(aacgmlib) && return aacgmlib
+    end
+    error("AACGM library not found")
 end
 
 const aacgmlib = find_library()
 
-function __init__()
-    AACGM_v2_DAT_PREFIX = joinpath(@__DIR__, "../../data/aacgm_coeffs-14/aacgm_coeffs-14-")
-    ENV["AACGM_v2_DAT_PREFIX"] = AACGM_v2_DAT_PREFIX
-    ENV["IGRF_COEFFS"] = joinpath(@__DIR__, "../../data/magmodel_1590-2025.txt")
-end
+__init__() = set_env()
 
 AACGM_v2_SetNow() = @ccall aacgmlib.AACGM_v2_SetNow()::Int
 AACGM_v2_SetDateTime(yr, mo, dy, hr, mt, sc) =
