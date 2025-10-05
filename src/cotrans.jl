@@ -1,3 +1,5 @@
+using Bumper
+
 function check_height(height)
     height < 0 && @warn "Coordinate transformations are not intended for altitudes < 0 km: $height"
     height > MAXALT && @error "Coefficients are not valid for altitudes above $MAXALT km: $height"
@@ -25,9 +27,11 @@ function geoc2aacgm(lat, lon, height, coefs = geo2aacgm_coefs[]; order = nothing
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    𝐫 = MVector{3, T}(undef)
-    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
-    x, y, z = 𝐫
+    x, y, z = @no_escape begin
+        𝐫 = @alloc(T, 3)
+        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
+        𝐫[1], 𝐫[2], 𝐫[3]
+    end
 
     fac = x^2 + y^2
     if fac > 1
@@ -91,9 +95,12 @@ function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    𝐫 = MVector{3, T}(undef)
-    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
-    x, y, z = normalize(𝐫)
+    x, y, z = @no_escape begin
+        𝐫 = @alloc(T, 3)
+        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
+        normalize!(𝐫)
+        𝐫[1], 𝐫[2], 𝐫[3]
+    end
 
     colat_out = acosd(z)
     lat_out = 90 - colat_out
@@ -127,6 +134,17 @@ Similar to the C function `AACGM_v2_Convert`.
 """
 function geod2aacgm(lat, lon, height, time...)
     return geoc2aacgm(geod2geoc(lat, lon, height)..., time...)
+end
+
+"""
+    geod2geo(lat, lon, height)
+
+Convert geodetic coordinates `(lat [deg], lon [deg], height [km])` 
+to geocentric geographic Cartesian coordinates `(x [km], y [km], z [km])`.
+"""
+function geod2geo(lat, lon, height)
+    lat_geoc, lon_geoc, height_geoc = geod2geoc(lat, lon, height)
+    return sph2cart(height_geoc + RE, lat_geoc, lon_geoc)
 end
 
 
@@ -181,13 +199,25 @@ function cart2sph(x, y, z)
 end
 
 """
+    sph2cart(r, lat, lon)
+
+Convert `(r, lat [deg], lon [deg])` in spherical coordinate to `(x, y, z)` in Cartesian coordinate.
+"""
+function sph2cart(r, lat, lon)
+    x = r * cosd(lat) * cosd(lon)
+    y = r * cosd(lat) * sind(lon)
+    z = r * sind(lat)
+    return x, y, z
+end
+
+"""
     geo2aacgm(x, y, z, time)
 
 Convert `(x [km], y [km], z [km])` in **geocentric geographic** (cartesian) coordinates to
 `(mlat [deg], mlon [deg], r [Earth radii])` in AACGM coordinate.
 """
 function geo2aacgm(x, y, z, time)
-    r, lati, longi = cart2sph(x, y, z)
+    r, lati, longi = cart2sph(x, y, z) # geo to geoc
     return geoc2aacgm(lati, longi, r - RE, time)
 end
 
