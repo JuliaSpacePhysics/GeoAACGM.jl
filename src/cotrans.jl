@@ -1,5 +1,3 @@
-using Bumper
-
 function check_height(height)
     height < 0 && @warn "Coordinate transformations are not intended for altitudes < 0 km: $height"
     height > MAXALT && @error "Coefficients are not valid for altitudes above $MAXALT km: $height"
@@ -29,7 +27,7 @@ function geoc2aacgm(lat, lon, height, coefs = geo2aacgm_coefs[]; order = nothing
 
     x, y, z = @no_escape begin
         𝐫 = @alloc(T, 3)
-        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
+        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
         𝐫[1], 𝐫[2], 𝐫[3]
     end
 
@@ -97,7 +95,7 @@ function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
 
     x, y, z = @no_escape begin
         𝐫 = @alloc(T, 3)
-        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j]
+        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
         normalize!(𝐫)
         𝐫[1], 𝐫[2], 𝐫[3]
     end

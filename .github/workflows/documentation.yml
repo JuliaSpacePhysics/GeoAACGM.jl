@@ -27,5 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: extractions/setup-just@v3
+      - name: Install LibAACGM.jl
+        run: just install && just install_lib docs
       - name: Build and deploy Documenter.jl docs
         uses: JuliaSpacePhysics/actions/DocsDocumenter@main
