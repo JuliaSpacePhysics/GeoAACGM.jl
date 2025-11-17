@@ -7,6 +7,7 @@ on:
     paths:
       - "src/**"
       - "docs/**"
+      - "Project.toml"
     tags: ["*"]
   pull_request:
   workflow_dispatch:
@@ -26,8 +27,9 @@ jobs:
       statuses: write
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
       - uses: extractions/setup-just@v3
       - name: Install LibAACGM.jl
-        run: just install && just install_lib docs
+        run: just install
       - name: Build and deploy Documenter.jl docs
         uses: JuliaSpacePhysics/actions/DocsDocumenter@main

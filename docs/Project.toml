@@ -7,4 +7,4 @@ LibAACGM = "ee618599-6bd6-46be-807e-a23e17005c2b"
 PrettyPrinting = "54e16d92-306c-5ea0-a30b-337be88ac337"
 
 [sources]
-LibAACGM = { path = "../LibAACGM" }
+LibAACGM = { path = "LibAACGM" }

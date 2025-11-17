@@ -6,12 +6,6 @@ install:
     gcc -fPIC -shared -o aacgmlib.so aacgmlib_v2.c astalglib.c igrflib.c mlt_v2.c rtime.c -lm
     install aacgmlib.so ../LibAACGM/aacgmlib.so
 
-install_lib project:
-    #!/usr/bin/env -S julia --threads=auto --project={{project}}
-    using Pkg; 
-    Pkg.develop([PackageSpec(path="."), PackageSpec(path="LibAACGM")]); 
-    Pkg.instantiate()
-
 test:
     #!/usr/bin/env sh
     export AACGM_v2_DAT_PREFIX="$(pwd)/data/aacgm_coeffs-14/aacgm_coeffs-14-"

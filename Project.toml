@@ -3,6 +3,9 @@ uuid = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
 version = "0.1.1"
 authors = ["Beforerr <zzj956959688@gmail.com> and contributors"]
 
+[workspace]
+projects = ["docs"]
+
 [deps]
 Bumper = "8ce10254-0962-460f-a3d8-1f77fea1446e"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
