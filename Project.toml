@@ -1,6 +1,6 @@
 name = "GeoAACGM"
 uuid = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Beforerr <zzj956959688@gmail.com> and contributors"]
 
 [workspace]
