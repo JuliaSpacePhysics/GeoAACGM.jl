@@ -46,6 +46,7 @@ using Dates: AbstractTime
 using Dictionaries: dictionary
 using LinearAlgebra
 using FixedSizeArrays
+using StaticArrays: SVector
 using Bumper
 using Tullio: @tullio
 using LazyArrays

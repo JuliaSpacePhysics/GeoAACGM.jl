@@ -220,6 +220,7 @@ function geo2aacgm(x, y, z, time)
 end
 
 geo2aacgm(𝐫, time) = geo2aacgm(𝐫[1], 𝐫[2], 𝐫[3], time)
+geo2aacgm(𝐫::AbstractVector, time) = SVector{3}(geo2aacgm(𝐫[1], 𝐫[2], 𝐫[3], time))
 
 
 """
