@@ -49,16 +49,18 @@ const coefs_lookup = let
     dictionary(i => (coefs[i]..., (coefs[i + 5] .- coefs[i])...) for i in 1590:5:2025)
 end
 
-function get_coefficients(time::T) where {T <: AbstractTime}
+function get_coefficients(time::DateTime)
     epoch_year = (year(time) ÷ 5) * 5
     next_epoch = epoch_year + 5
     g2a0, a2g0, dg2a, da2g = coefs_lookup[epoch_year]
-    t0, tf = T(epoch_year), T(next_epoch)
+    t0, tf = DateTime(epoch_year), DateTime(next_epoch)
     ratio = (time - t0) / (tf - t0)
     g2a = @~ @. dg2a * ratio + g2a0
     a2g = @~ @. da2g * ratio + a2g0
     return g2a, a2g
 end
+
+get_coefficients(time::AbstractTime) = get_coefficients(DateTime(time))
 
 function set_coefficients!(time::T) where {T <: AbstractTime}
     g2a, a2g = get_coefficients(time)
