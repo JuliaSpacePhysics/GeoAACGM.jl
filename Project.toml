@@ -18,14 +18,24 @@ SphericalHarmonics = "c489a379-e885-57ff-9236-bd896d33c250"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
+[weakdeps]
+GeoCotrans = "4624b3bc-fe35-44f8-bfa8-722ff9c0e307"
+SpaceDataModel = "0b37b92c-f0c5-4a52-bd5c-390dec20857c"
+
+[extensions]
+GeoAACGMSpaceDataModelExt = "SpaceDataModel"
+GeoAACGMGeoCotransExt = "GeoCotrans"
+
 [compat]
 Bumper = "0.7"
 Dates = "1"
 Dictionaries = "0.4"
 FixedSizeArrays = "1"
+GeoCotrans = "0.1"
 LazyArrays = "2.6"
 LinearAlgebra = "1"
 PrecompileTools = "1.2"
+SpaceDataModel = "0.2.3"
 SphericalHarmonics = "0.1.19"
 StaticArrays = "1.9"
 Tullio = "0.3"

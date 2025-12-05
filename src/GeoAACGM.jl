@@ -61,4 +61,7 @@ export geoc2aacgm, geod2aacgm
 export geod2geoc, geoc2geod
 export aacgm2geoc, aacgm2geod
 export geo2aacgm
+export gei2aacgm
+
+function gei2aacgm end
 end
