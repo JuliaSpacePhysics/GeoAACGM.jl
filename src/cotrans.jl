@@ -81,13 +81,13 @@ Convert AACGM coordinates `(mlat [deg], mlon [deg], r [Earth radii])`
 to geocentric coordinates `(lat [deg], lon [deg], height [km])`.
 """
 function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
-    order = something(order, SHORDER)
+    order = @something(order, SHORDER)
     T = promote_type(typeof(mlat), typeof(mlon), typeof(r))
 
     height = (r - 1) * RE
     lon_rad = deg2rad(mlon)
     lat_adj = aacgm2alt(height, mlat)
-    colat_rad = deg2rad(90 - lat_adj)
+    colat_rad = deg2rad(90. - lat_adj)
 
     Yₗₘ = compute_harmonics!(S_cached, colat_rad, lon_rad, order)
     alt_var = height / MAXALT
@@ -152,9 +152,7 @@ end
 Convert geodetic coordinates to geocentric coordinates.
 """
 function geod2geoc(lat, lon, alt)
-    θ = (90 - lat)
-    st = sind(θ)
-    ct = cosd(θ)
+    st, ct = sincosd(90 - lat)
 
     st2 = st * st
     ct2 = ct * ct
