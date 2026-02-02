@@ -43,10 +43,10 @@ function load_coefficients(year)
 end
 
 const coefs_lookup = let
-    coefs = dictionary(year => load_coefficients(year) for year in 1590:5:2030)
+    coefs = Dict(year => load_coefficients(year) for year in 1590:5:2030)
     geo2aacgm_coefs[] = copy(coefs[1590][1])
     aacgm2geo_coefs[] = copy(coefs[1590][2])
-    dictionary(i => (coefs[i]..., (coefs[i + 5] .- coefs[i])...) for i in 1590:5:2025)
+    Dict(i => (coefs[i]..., (coefs[i + 5] .- coefs[i])...) for i in 1590:5:2025)
 end
 
 function get_coefficients(time::DateTime)

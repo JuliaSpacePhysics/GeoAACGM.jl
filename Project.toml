@@ -9,7 +9,6 @@ projects = ["docs"]
 [deps]
 Bumper = "8ce10254-0962-460f-a3d8-1f77fea1446e"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
-Dictionaries = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
 FixedSizeArrays = "3821ddf9-e5b5-40d5-8e25-6813ab96b5e2"
 LazyArrays = "5078a376-72f3-5289-bfd5-ec5146d43c02"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -29,9 +28,8 @@ GeoAACGMSpaceDataModelExt = "SpaceDataModel"
 [compat]
 Bumper = "0.7"
 Dates = "1"
-Dictionaries = "0.4"
 FixedSizeArrays = "1"
-GeoCotrans = "0.1"
+GeoCotrans = "0.1, 0.2"
 LazyArrays = "2.6"
 LinearAlgebra = "1"
 PrecompileTools = "1.2"

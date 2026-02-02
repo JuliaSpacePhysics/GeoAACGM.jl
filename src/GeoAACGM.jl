@@ -43,7 +43,6 @@ mlat, mlon, r = geod2aacgm(glat, glon, height, dt)
 module GeoAACGM
 using Dates
 using Dates: AbstractTime
-using Dictionaries: dictionary
 using LinearAlgebra
 using FixedSizeArrays
 using StaticArrays: SVector
