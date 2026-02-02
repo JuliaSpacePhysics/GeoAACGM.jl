@@ -1,5 +1,8 @@
 # GeoAACGM.jl
 
+[![DOI](https://zenodo.org/badge/992753544.svg)](https://doi.org/10.5281/zenodo.15588522)
+[![version](https://juliahub.com/docs/General/GeoAACGM/stable/version.svg)](https://juliahub.com/ui/Packages/General/GeoAACGM)
+
 ```@docs
 GeoAACGM
 ```
