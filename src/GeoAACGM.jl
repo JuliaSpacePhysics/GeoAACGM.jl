@@ -17,7 +17,9 @@ We support coordinate transformations between the following coordinate systems:
 
 - **Geodetic**: `(lat [deg], lon [deg], height [km])`, based on the WGS84 ellipsoid model of the Earth.
 
-with [`geoc2aacgm`](@ref), [`geod2aacgm`](@ref), [`geod2geoc`](@ref) functions.
+with [`geoc2aacgm`](@ref) / [`aacgm2geoc`](@ref), [`geod2aacgm`](@ref) / [`aacgm2geod`](@ref), [`geod2geoc`](@ref) / [`geoc2geod`](@ref) functions.
+
+Other useful functions: [`geo2aacgm`](@ref), [`gei2aacgm`](@ref).
 
 ## Examples
 

@@ -37,7 +37,7 @@ Order = [:function]
 
 !!! note
 
-    It is preferable to use the `geo2aacgm.(glats, glons, hights, times)` interface compared to manually setting the coefficients with `set_coefficients!` and then using `geo2aacgm(glat, glon, hight)`. The former is simpler and ensures accuracy with negligible performance loss due to lazy interpolation.
+    It is preferable to use the `geod2aacgm.(glats, glons, hights, times)` interface compared to manually setting the coefficients with `set_coefficients!` and then using `geod2aacgm(glat, glon, hight)`. The former is simpler and ensures accuracy with negligible performance loss due to lazy interpolation.
 
 ### Single Time Conversion
 
