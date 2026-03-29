@@ -1,9 +1,9 @@
 [deps]
-GeoAACGM = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Chairmarks = "0ca39b1e-fe0b-4e98-acfc-b1656634c4de"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
-JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
+GeoAACGM = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
+GeoCotrans = "4624b3bc-fe35-44f8-bfa8-722ff9c0e307"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"

@@ -2,6 +2,8 @@ using TestItems, TestItemRunner
 
 @run_package_tests filter = ti -> !(:skipci in ti.tags)
 
+const RUN_JET_TESTS = isempty(VERSION.prerelease)
+
 @testsnippet Share begin
     using Pkg
     using Dates
@@ -47,9 +49,12 @@ end
     @info Base.summarysize(set_coefficients!(Date(2029))) |> Base.format_bytes
 end
 
-@testitem "JET" setup = [Share] begin
-    using JET
-    @test_call GeoAACGM.workload()
+if RUN_JET_TESTS
+    using Pkg; Pkg.add("JET"); Pkg.instantiate()
+    @testitem "JET static analysis" begin
+        using JET
+        @test_call GeoAACGM.workload()
+    end
 end
 
 @testitem "Aqua" begin

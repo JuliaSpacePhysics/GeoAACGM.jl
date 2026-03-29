@@ -1,4 +1,6 @@
 @testitem "geo[c/d]2aacgm and aacgm2geo[c/d]" setup = [Share] begin
+    using GeoAACGM: geod2geo
+
     lat = 45.5
     lon = -23.5
     hgt = 1135
@@ -10,10 +12,13 @@
     @test _approx((mlat, mlon, r), c_geod2aacgm_result, atol = 1.0e-4)
     @test _approx(geoc2aacgm(lat, lon, hgt, dt), (47.595365, 56.631654, 1.178145), atol = 1.0e-6)
 
+    geo = GeoAACGM.geod2geo(lat, lon, hgt)
+    @test geo == [4836.26229836558, -2102.8666958863614, 5336.008465615027]
+    @test _approx(GeoAACGM.geo2aacgm(geo, dt), c_geod2aacgm_result, atol = 1.0e-4)
+
     # AACGM to geodetic
-    c_aacgm2geod_result = (45.439863, -23.477496, 1134.977555)
-    @info aacgm2geod(mlat, mlon, r, dt)
-    @test _approx(aacgm2geod(mlat, mlon, r, dt), c_aacgm2geod_result, atol = 1.0e-6)
+    c_aacgm2geod_result = [45.439863, -23.477496, 1134.977555]
+    @test aacgm2geod(mlat, mlon, r, dt) ≈ c_aacgm2geod_result
 
     # Multiple points
     n = 10
@@ -51,6 +56,16 @@ end
     println(@b geod2aacgm($lat, $lon, $hgt), AACGM_v2_Convert($lat, $lon, $hgt, 0))
 end
 
+@testitem "geodetic" setup = [Share] begin
+    lat = 45.5
+    lon = -23.5
+    hgt = 1135
+    latlonhgt = (lat, lon, hgt)
+    truth = (45.33670316139694, -23.5, 1131.097495059469)
+    geoc = geod2geoc(lat, lon, hgt)
+    @test geoc == truth
+    @test _approx(geoc2geod(geoc...), latlonhgt)
+end
 
 @testitem "geoc2aacgm - Validation" setup = [Share] begin
     using LibAACGM
