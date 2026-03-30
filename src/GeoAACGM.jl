@@ -51,6 +51,9 @@ using StaticArrays: SVector
 using Bumper
 using Tullio: @tullio
 using LazyArrays
+using SpaceDataModel: unwrap, getdim, tdimnum
+using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
+using GeoCotrans: gei2geo
 
 include("constants.jl")
 include("harmonics.jl")
@@ -61,8 +64,23 @@ include("workload.jl")
 export geoc2aacgm, geod2aacgm
 export geod2geoc, geoc2geod
 export aacgm2geoc, aacgm2geod
-export geo2aacgm
-export gei2aacgm
+export geo2aacgm, gei2aacgm
 
+function geo2aacgm(x; dim = nothing)
+    out = similar(x)
+    dim = @something dim tdimnum(x)
+    times = unwrap(getdim(x, dim))
+    map!(
+        geo2aacgm,
+        eachslice(out; dims = dim),
+        eachslice(x; dims = dim),
+        times,
+    )
+    return out
+end
+
+"Convert GEI (Geocentric Equatorial Inertial) coordinates to AACGM coordinates."
 function gei2aacgm end
+gei2aacgm(x; dim = nothing) = geo2aacgm(gei2geo(x); dim)
+
 end

@@ -140,71 +140,18 @@ end
 Convert geodetic coordinates `(lat [deg], lon [deg], height [km])` 
 to geocentric geographic Cartesian coordinates `(x [km], y [km], z [km])`.
 """
-function geod2geo(lat, lon, height)
-    lat_geoc, lon_geoc, height_geoc = geod2geoc(lat, lon, height)
-    return sph2cart(height_geoc + RE, lat_geoc, lon_geoc)
-end
+geod2geo(lat, lon, height) = geoc2geo(geod2geoc(lat, lon, height)...)
 
+sph2geoc(sph) = (90 - rad2deg(sph[2]), rad2deg(sph[3]), sph[1] * R🜨 - R🜨)
+
+geoc2geo(lat, lon, alt) = sphd2car(alt + RE, 90 - lat, lon)
 
 """
     geod2geoc(lat, lon, alt)
 
 Convert geodetic coordinates to geocentric coordinates.
 """
-function geod2geoc(lat, lon, alt)
-    st, ct = sincosd(90 - lat)
-
-    st2 = st * st
-    ct2 = ct * ct
-    one = EARTH_A2 * st2
-    two = EARTH_B2 * ct2
-    three = one + two
-
-    # Calculate radius terms
-    rho = sqrt(three)
-    r = sqrt(alt * (alt + 2 * rho) + (EARTH_A2 * one + EARTH_B2 * two) / three)
-
-    # Calculate direction cosines
-    cd = (alt + rho) / r
-    sd = EARTH_A2_B2_DIFF / rho * ct * st / r
-
-    lat = 90 - acosd(ct * cd - st * sd)
-    return lat, lon, r - RE
-end
-
-"""
-    cart2sph(x, y, z)
-
-Convert `(x, y, z)` in Cartesian coordinate to `(r, lat [deg], lon [deg])` in spherical coordinate.
-"""
-function cart2sph(x, y, z)
-    sq = x^2 + y^2
-    r = sqrt(sq + z^2)
-    if sq == 0.0
-        lon = 0.0
-        lat = ifelse(z < 0.0, -90.0, 90.0)
-    else
-        # sqrt of x-y plane projection
-        ρ = sqrt(sq)
-        lon = atand(y, x)
-        lat = 90.0 - atand(ρ, z)
-        # wrap longitude into [0,360)
-        lon = ifelse(lon < 0.0, lon + 360.0, lon)
-    end
-    return r, lat, lon
-end
-
-"""
-    sph2cart(r, lat, lon)
-
-Convert `(r, lat [deg], lon [deg])` in spherical coordinate to `(x, y, z)` in Cartesian coordinate.
-"""
-function sph2cart(r, lat, lon)
-    x = r * cosd(lat) * cosd(lon)
-    y = r * cosd(lat) * sind(lon)
-    z = r * sind(lat)
-    return x, y, z
-end
+geod2geoc(lat, lon, alt) = sph2geoc(gdz2sph(lat, lon, alt))
 
 """
     geo2aacgm(x, y, z, time)
@@ -213,8 +160,8 @@ Convert `(x [km], y [km], z [km])` in **geocentric geographic** (cartesian) coor
 `(mlat [deg], mlon [deg], r [Earth radii])` in AACGM coordinate.
 """
 function geo2aacgm(x, y, z, time)
-    r, lati, longi = cart2sph(x, y, z) # geo to geoc
-    return geoc2aacgm(lati, longi, r - RE, time)
+    r, lati, longi = car2sphd(x, y, z)
+    return geoc2aacgm(90 - lati, longi, r - RE, time)
 end
 
 geo2aacgm(𝐫, time) = geo2aacgm(𝐫[1], 𝐫[2], 𝐫[3], time)
@@ -224,41 +171,7 @@ geo2aacgm(𝐫::AbstractVector, time) = SVector{3}(geo2aacgm(𝐫[1], 𝐫[2], �
 """
     geoc2geod(lat, lon, r)
 
-Convert geocentric coordinates to geodetic coordinates.
-This is part of the coordinate transformation pipeline in AACGM-v2.
-
-# Returns
-- `(lat_geod, lon, height)`: Geodetic coordinates (latitude in degrees, longitude in degrees, height in km)
+Convert geocentric coordinates to geodetic coordinates 
+`(lat_geod [deg], lon [deg], height [km])`.
 """
-function geoc2geod(lat, lon, hgt)
-    # WGS84 ellipsoid parameters
-    a = 6378.137  # semi-major axis in km
-    f = 1 / 298.257223563  # flattening
-    e2 = f * (2 - f)  # first eccentricity squared
-
-    # Convert from spherical to Cartesian
-    r_km = hgt + RE
-    x = r_km * cosd(lat) * cosd(lon)
-    y = r_km * cosd(lat) * sind(lon)
-    z = r_km * sind(lat)
-
-    # Iterative conversion to geodetic
-    p = sqrt(x^2 + y^2)
-    lat_geod = atan(z / p)  # initial guess
-
-    for _ in 1:10  # iterate to convergence
-        N = a / sqrt(1 - e2 * sin(lat_geod)^2)
-        height = p / cos(lat_geod) - N
-        lat_geod_new = atan(z / (p * (1 - e2 * N / (N + height))))
-
-        if abs(lat_geod_new - lat_geod) < 1.0e-12
-            break
-        end
-        lat_geod = lat_geod_new
-    end
-
-    N = a / sqrt(1 - e2 * sin(lat_geod)^2)
-    height = p / cos(lat_geod) - N
-
-    return (rad2deg(lat_geod), lon, height)
-end
+geoc2geod(lat, lon, hgt) = car2gdz(geoc2geo(lat, lon, hgt); scale = 1.0)
