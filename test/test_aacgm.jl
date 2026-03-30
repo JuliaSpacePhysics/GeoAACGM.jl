@@ -40,7 +40,7 @@
     verbose && @info "Benchmarks" b1, b2
 end
 
-@testitem "geod2geoc" setup = [Share] begin
+@testitem "geod2aacgm" setup = [Share] begin
     using LibAACGM
     lat = 45.5
     lon = -23.5

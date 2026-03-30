@@ -2,3 +2,4 @@ Manifest*.toml
 *.tar
 *.so
 test_aacgm
+c_aacgm_v2*
