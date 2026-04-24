@@ -52,7 +52,7 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v3
       - uses: julia-actions/julia-buildpkg@v1
-      - uses: extractions/setup-just@v3
+      - uses: extractions/setup-just@v4
       - name: Install libaacgm
         run: just install
       - uses: julia-actions/julia-runtest@v1
