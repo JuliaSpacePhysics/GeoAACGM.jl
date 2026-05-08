@@ -19,7 +19,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 [compat]
 Dates = "1"
 FixedSizeArrays = "1"
-GeoCotrans = "0.1, 0.2"
+GeoCotrans = "0.2.4"
 LinearAlgebra = "1"
 PrecompileTools = "1.2"
 SpaceDataModel = "0.2.3"

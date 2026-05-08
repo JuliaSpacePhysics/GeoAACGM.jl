@@ -1,17 +1,6 @@
 # Related C functions:
-# AACGM_v2_LoadCoefFP
-# AACGM_v2_LoadCoef
-# AACGM_v2_LoadCoefs
+# AACGM_v2_LoadCoefFP, AACGM_v2_LoadCoef, AACGM_v2_LoadCoefs
 export get_coefficients, set_coefficients!
-
-struct LinearInterp{T, N, A <: AbstractArray{T, N}, B <: AbstractArray{T, N}, R} <: AbstractArray{T, N}
-    base::A
-    delta::B
-    ratio::R
-end
-
-Base.size(li::LinearInterp) = size(li.base)
-@inline Base.getindex(li::LinearInterp, i::Int...) = @inbounds li.delta[i...] * li.ratio + li.base[i...]
 
 const geo2aacgm_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
 const aacgm2geo_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()

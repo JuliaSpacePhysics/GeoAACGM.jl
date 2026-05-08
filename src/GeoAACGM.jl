@@ -50,7 +50,7 @@ using FixedSizeArrays
 using StaticArrays: SVector, MVector
 using SpaceDataModel: unwrap, getdim, tdimnum
 using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
-using GeoCotrans: gei2geo
+using GeoCotrans: gei2geo, LinearInterp
 
 include("constants.jl")
 include("harmonics.jl")
@@ -63,16 +63,16 @@ export geod2geoc, geoc2geod
 export aacgm2geoc, aacgm2geod
 export geo2aacgm, gei2aacgm
 
-function geo2aacgm(x; dim = nothing)
+for op in (:geo2aacgm, :geod2aacgm, :aacgm2geoc, :aacgm2geod)
+    @eval $op(𝐫::AbstractVector, time) = SVector{3}($op(𝐫[1], 𝐫[2], 𝐫[3], time))
+    @eval $op(x; dim = nothing) = _geo2aacgm($op, x; dim)
+end
+
+function _geo2aacgm(f, x; dim = nothing)
     out = similar(x)
-    dim = @something dim tdimnum(x)
-    times = unwrap(getdim(x, dim))
-    map!(
-        geo2aacgm,
-        eachslice(out; dims = dim),
-        eachslice(x; dims = dim),
-        times,
-    )
+    dims = @something dim tdimnum(x)
+    times = unwrap(getdim(x, dims))
+    map!(f, eachslice(out; dims), eachslice(x; dims), times)
     return out
 end
 
