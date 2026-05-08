@@ -25,11 +25,9 @@ function geoc2aacgm(lat, lon, height, coefs = geo2aacgm_coefs[]; order = nothing
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    x, y, z = @no_escape begin
-        𝐫 = @alloc(T, 3)
-        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
-        𝐫[1], 𝐫[2], 𝐫[3]
-    end
+    𝐫 = MVector{3, T}(undef)
+    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
+    x, y, z = 𝐫[1], 𝐫[2], 𝐫[3]
 
     fac = x^2 + y^2
     if fac > 1
@@ -93,12 +91,10 @@ function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    x, y, z = @no_escape begin
-        𝐫 = @alloc(T, 3)
-        @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
-        normalize!(𝐫)
-        𝐫[1], 𝐫[2], 𝐫[3]
-    end
+    𝐫 = MVector{3, T}(undef)
+    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
+    normalize!(𝐫)
+    x, y, z = 𝐫[1], 𝐫[2], 𝐫[3]
 
     colat_out = acosd(z)
     lat_out = 90 - colat_out
