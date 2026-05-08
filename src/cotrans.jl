@@ -4,6 +4,22 @@ function check_height(height)
     return
 end
 
+@inline @generated function sh_contract(Yₗₘ, coefs, alt_powers::NTuple{N}) where N
+    quote
+        T = promote_type(eltype(Yₗₘ), eltype(coefs), eltype(alt_powers))
+        𝐫 = MVector{3, T}(undef)
+        @fastmath @inbounds for i in eachindex(𝐫)
+            Base.Cartesian.@nexprs $N j -> (a_j = zero(T))
+            for k in eachindex(Yₗₘ)
+                Yk = Yₗₘ[k]
+                Base.Cartesian.@nexprs $N j -> (a_j += Yk * coefs[k, i, j])
+            end
+            𝐫[i] = +((Base.Cartesian.@ntuple $N j -> a_j * alt_powers[j])...)
+        end
+        return 𝐫
+    end
+end
+
 """
     geoc2aacgm(lat, lon, height, time, ...) -> (mlat, mlon, r)
     geoc2aacgm(lat, lon, height, coefs=geo2aacgm_coefs[], ...) -> (mlat, mlon, r)
@@ -25,9 +41,7 @@ function geoc2aacgm(lat, lon, height, coefs = geo2aacgm_coefs[]; order = nothing
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    𝐫 = MVector{3, T}(undef)
-    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
-    x, y, z = 𝐫[1], 𝐫[2], 𝐫[3]
+    x, y, z = sh_contract(Yₗₘ, coefs, alt_powers)
 
     fac = x^2 + y^2
     if fac > 1
@@ -80,19 +94,16 @@ to geocentric coordinates `(lat [deg], lon [deg], height [km])`.
 """
 function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
     order = @something(order, SHORDER)
-    T = promote_type(typeof(mlat), typeof(mlon), typeof(r))
-
     height = (r - 1) * RE
     lon_rad = deg2rad(mlon)
     lat_adj = aacgm2alt(height, mlat)
-    colat_rad = deg2rad(90. - lat_adj)
+    colat_rad = deg2rad(90.0 - lat_adj)
 
     Yₗₘ = compute_harmonics!(S_cached, colat_rad, lon_rad, order)
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    𝐫 = MVector{3, T}(undef)
-    @tullio 𝐫[i] = Yₗₘ[k] * coefs[k, i, j] * alt_powers[j] threads = false
+    𝐫 = sh_contract(Yₗₘ, coefs, alt_powers)
     normalize!(𝐫)
     x, y, z = 𝐫[1], 𝐫[2], 𝐫[3]
 
