@@ -47,10 +47,8 @@ using Dates
 using Dates: AbstractTime
 using LinearAlgebra
 using FixedSizeArrays
-using StaticArrays: SVector
-using Bumper
+using StaticArrays: SVector, MVector
 using Tullio: @tullio
-using LazyArrays
 using SpaceDataModel: unwrap, getdim, tdimnum
 using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
 using GeoCotrans: gei2geo

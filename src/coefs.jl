@@ -4,6 +4,15 @@
 # AACGM_v2_LoadCoefs
 export get_coefficients, set_coefficients!
 
+struct LinearInterp{T, N, A <: AbstractArray{T, N}, B <: AbstractArray{T, N}, R} <: AbstractArray{T, N}
+    base::A
+    delta::B
+    ratio::R
+end
+
+Base.size(li::LinearInterp) = size(li.base)
+@inline Base.getindex(li::LinearInterp, i::Int...) = @inbounds li.delta[i...] * li.ratio + li.base[i...]
+
 const geo2aacgm_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
 const aacgm2geo_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
 
@@ -55,8 +64,8 @@ function get_coefficients(time::DateTime)
     g2a0, a2g0, dg2a, da2g = coefs_lookup[epoch_year]
     t0, tf = DateTime(epoch_year), DateTime(next_epoch)
     ratio = (time - t0) / (tf - t0)
-    g2a = @~ @. dg2a * ratio + g2a0
-    a2g = @~ @. da2g * ratio + a2g0
+    g2a = LinearInterp(g2a0, dg2a, ratio)
+    a2g = LinearInterp(a2g0, da2g, ratio)
     return g2a, a2g
 end
 
