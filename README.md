@@ -4,21 +4,13 @@
 [![version](https://juliahub.com/docs/General/GeoAACGM/stable/version.svg)](https://juliahub.com/ui/Packages/General/GeoAACGM)
 
 [![Build Status](https://github.com/JuliaSpacePhysics/GeoAACGM.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaSpacePhysics/GeoAACGM.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![](https://img.shields.io/badge/%F0%9F%9B%A9%EF%B8%8F_tested_with-JET.jl-233f9a)](https://github.com/aviatesk/JET.jl)
-[![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 [![Coverage](https://codecov.io/gh/JuliaSpacePhysics/GeoAACGM.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaSpacePhysics/GeoAACGM.jl)
+Pure Julia implementation of Altitude-Adjusted Corrected Geomagnetic (AACGM) coordinate system. Useful for organizing ionospheric and magnetospheric phenomena by magnetic connectivity.
 
-A pure Julia implementation of the Altitude-Adjusted Corrected Geomagnetic (AACGM) coordinate system. Fast and accurate.
-
-A Julia wrapper `LibAACGM` for the [AACGM-v2 C library](https://superdarn.thayer.dartmouth.edu/aacgm.html) is also available in the [`LibAACGM`](./LibAACGM) directory, mainly used for testing and benchmarking.
-
-**Installation**: at the Julia REPL, run `using Pkg; Pkg.add("LibAACGM")`
-
-**Documentation**: [![Documentation](https://img.shields.io/badge/docs-dev-blue.svg?logo=julia)](https://juliaspacephysics.github.io/GeoAACGM.jl)
-
-## Usage
+## Quick Start
 
 ```julia
+using Pkg; Pkg.add("LibAACGM")
 using GeoAACGM
 using Dates
 
@@ -31,3 +23,15 @@ mlat, mlon, r = geoc2aacgm(glat, glon, height, dt)
 # Convert geodetic to AACGM
 mlat, mlon, r = geod2aacgm(glat, glon, height, dt)
 ```
+
+## What is AACGM?
+
+AACGM labels positions by magnetic field lines. Its reference definition traces field lines to dipole magnetic equator and uses corresponding dipole field-line label as magnetic latitude and longitude.
+
+GeoAACGM implements fast Shepherd (2014) spherical harmonic coefficient approximation, intended mainly below about 2000 km and outside the forbidden/undefined regions.
+
+## Notes
+
+Check [`shepherd2014_comparison.jl`](docs/examples/shepherd2014_comparison.jl) for Shepherd-style comparison plots between coefficient approximation and direct `GeoCotrans.trace` field-line tracing.
+
+[Documentation](https://juliaspacephysics.github.io/GeoAACGM.jl) provides full API signatures and comparison with the [AACGM-v2 C library](https://superdarn.thayer.dartmouth.edu/aacgm.html). A Julia wrapper `LibAACGM` for the C library is available under the [`LibAACGM`](./LibAACGM) directory.
