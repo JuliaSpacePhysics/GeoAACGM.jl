@@ -9,6 +9,7 @@ makedocs(
     modules = [GeoAACGM],
     pages = [
         "Home" => "index.md",
+        "Shepherd 2014 comparison plots" => "shepherd2014.md",
     ],
     checkdocs = :exports,
     doctest = true

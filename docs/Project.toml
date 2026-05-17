@@ -1,9 +1,12 @@
 [deps]
-GeoAACGM = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Chairmarks = "0ca39b1e-fe0b-4e98-acfc-b1656634c4de"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
+GeoAACGM = "7d0bd8ea-8a67-4204-9dfc-7af11c683dec"
+GeoCotrans = "4624b3bc-fe35-44f8-bfa8-722ff9c0e307"
 LibAACGM = "ee618599-6bd6-46be-807e-a23e17005c2b"
+OrdinaryDiffEqTsit5 = "b1df2697-797e-41e3-8120-5422d3b24e4a"
 PrettyPrinting = "54e16d92-306c-5ea0-a30b-337be88ac337"
 
 [sources]
