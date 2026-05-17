@@ -35,6 +35,7 @@ end
     julia_results = compute_harmonics!(S, colat, lon, order)
     c_results = AACGM_v2_Rylm(colat, lon, order)
     # Compare the results
+    @test julia_results == compute_harmonics(colat, lon, order)
     @test julia_results ≈ c_results
     println.(
         @b compute_harmonics!($S, $colat, $lon, $order),

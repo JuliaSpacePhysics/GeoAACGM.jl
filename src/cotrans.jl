@@ -1,3 +1,5 @@
+const MAXALT = 2000.  # maximum altitude in km
+
 function check_height(height)
     height < 0 && @warn "Coordinate transformations are not intended for altitudes < 0 km: $height"
     height > MAXALT && @error "Coefficients are not valid for altitudes above $MAXALT km: $height"
@@ -103,8 +105,7 @@ function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
-    𝐫 = sh_contract(Yₗₘ, coefs, alt_powers)
-    normalize!(𝐫)
+    𝐫 = normalize(sh_contract(Yₗₘ, coefs, alt_powers))
     x, y, z = 𝐫[1], 𝐫[2], 𝐫[3]
 
     colat_out = acosd(z)
