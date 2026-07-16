@@ -11,3 +11,6 @@ PrettyPrinting = "54e16d92-306c-5ea0-a30b-337be88ac337"
 
 [sources]
 LibAACGM = { path = "../LibAACGM" }
+
+[compat]
+DocumenterCitations = "1.4.1"
