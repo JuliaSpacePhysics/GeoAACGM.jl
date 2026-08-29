@@ -1,13 +1,9 @@
 """
     GeoAACGM
 
-A pure Julia implementation of the Altitude-Adjusted Corrected Geomagnetic (AACGM)
-coordinate system to trace magnetic field lines for ionospheric and magnetospheric
-research.
+Altitude-Adjusted Corrected Geomagnetic (AACGM) coordinate system for fast magnetic field line tracing.
 
-Simple, fast, and accurate.
-
-We support coordinate transformations between the following coordinate systems:
+Coordinate transform between the following coordinate systems:
 
 - **AACGM**: `(mlat [deg], mlon [deg], r [Earth radii])`,
     based on the [IGRF-14 model](https://www.ncei.noaa.gov/products/international-geomagnetic-reference-field) (1900-2030)
@@ -35,12 +31,6 @@ mlat, mlon, r = geoc2aacgm(glat, glon, height, dt)
 # Convert geodetic to AACGM
 mlat, mlon, r = geod2aacgm(glat, glon, height, dt)
 ```
-
-## References
-
-- [AACGM-V2](https://superdarn.thayer.dartmouth.edu/aacgm.html)
-- [aacgmv2](https://aacgmv2.readthedocs.io/en/latest):
-    Python library for AACGM-v2 magnetic coordinates [GitHub](https://github.com/aburrell/aacgmv2)
 """
 module GeoAACGM
 using Dates
@@ -65,10 +55,10 @@ export geo2aacgm, gei2aacgm
 
 for op in (:geo2aacgm, :geod2aacgm, :aacgm2geoc, :aacgm2geod)
     @eval $op(𝐫::AbstractVector, time) = SVector{3}($op(𝐫[1], 𝐫[2], 𝐫[3], time))
-    @eval $op(x; dim = nothing) = _geo2aacgm($op, x; dim)
+    @eval $op(x; dim=nothing) = _geo2aacgm($op, x; dim)
 end
 
-function _geo2aacgm(f, x; dim = nothing)
+function _geo2aacgm(f, x; dim=nothing)
     out = similar(x)
     dims = @something dim tdimnum(x)
     times = unwrap(getdim(x, dims))
@@ -78,6 +68,10 @@ end
 
 "Convert GEI (Geocentric Equatorial Inertial) coordinates to AACGM coordinates."
 function gei2aacgm end
-gei2aacgm(x; dim = nothing) = geo2aacgm(gei2geo(x); dim)
+gei2aacgm(x; dim=nothing) = geo2aacgm(gei2geo(x); dim)
 
 end
+
+## References
+
+# Python library: https://github.com/aburrell/aacgmv2 and https://aacgmv2.readthedocs.io/en/latest
