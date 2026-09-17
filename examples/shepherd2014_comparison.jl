@@ -17,18 +17,18 @@ function great_circle_error_km(lat1, lon1, lat2, lon2, r)
 end
 
 function dipole_equator_crossing(pos, time; solver = Tsit5(), kwargs...)
-    in = (GEO(), Cartesian3())
+    from = (GEO(), Cartesian3())
     for dir in (-1, 1)
         sol = trace(
-            pos, time, solver; dir, in, r0 = 0.2, rlim = 200.0, maxs = 2000.0,
+            pos, time, solver; dir, from, r0 = 0.2, rlim = 200.0, maxs = 2000.0,
             save_everystep = true, reltol = 1.0e-7, abstol = 1.0e-9, kwargs...
         )
         for i in 1:(length(sol.u) - 1)
             if norm(sol.u[i]) < 1 - 1.0e-4
                 break
             end
-            z0 = transform(MAG, GEO, sol.u[i], time)[3]
-            z1 = transform(MAG, GEO, sol.u[i + 1], time)[3]
+            z0 = transform(GEO => MAG, sol.u[i], time)[3]
+            z1 = transform(GEO => MAG, sol.u[i + 1], time)[3]
             z0 == 0 && return sol.u[i]
             if z0 * z1 <= 0
                 α = abs(z0) / (abs(z0) + abs(z1))
@@ -46,8 +46,8 @@ function traced_aacgm(lat, lon, height, time; kwargs...)
     pos = sphd2car(r, 90 - lat, lon)
     crossing = dipole_equator_crossing(pos, time; kwargs...)
     isnothing(crossing) && return (NaN, NaN, r)
-    mag0 = transform(MAG, GEO, pos, time)
-    mag_eq = transform(MAG, GEO, crossing, time)
+    mag0 = transform(GEO => MAG, pos, time)
+    mag_eq = transform(GEO => MAG, crossing, time)
     L = norm(mag_eq)
     L < r && return (NaN, NaN, r)
     mlat = sign(iszero(mag0[3]) ? lat : mag0[3]) * acosd(sqrt(clamp(r / L, 0, 1)))

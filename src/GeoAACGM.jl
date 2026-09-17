@@ -15,7 +15,7 @@ Coordinate transform between the following coordinate systems:
 
 with [`geoc2aacgm`](@ref) / [`aacgm2geoc`](@ref), [`geod2aacgm`](@ref) / [`aacgm2geod`](@ref), [`geod2geoc`](@ref) / [`geoc2geod`](@ref) functions.
 
-Other useful functions: [`geo2aacgm`](@ref), [`gei2aacgm`](@ref).
+Other useful functions: [`geo2aacgm`](@ref), [`gei2aacgm`](@ref), [`aacgm_mlt`](@ref).
 
 ## Examples
 
@@ -40,18 +40,20 @@ using FixedSizeArrays
 using StaticArrays: SVector, MVector
 using SpaceDataModel: unwrap, getdim, tdimnum
 using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
-using GeoCotrans: gei2geo, LinearInterp
+using GeoCotrans: gei2geo, LinearInterp, calc_sun_gei
 
 include("constants.jl")
 include("harmonics.jl")
 include("cotrans.jl")
 include("coefs.jl")
+include("mlt.jl")
 include("workload.jl")
 
 export geoc2aacgm, geod2aacgm
 export geod2geoc, geoc2geod
 export aacgm2geoc, aacgm2geod
 export geo2aacgm, gei2aacgm
+export aacgm_mlt
 
 for op in (:geo2aacgm, :geod2aacgm, :aacgm2geoc, :aacgm2geod)
     @eval $op(𝐫::AbstractVector, time) = SVector{3}($op(𝐫[1], 𝐫[2], 𝐫[3], time))

@@ -4,12 +4,15 @@ on:
   push:
     branches:
       - main
-    paths:
+    paths: &paths
       - "src/**"
       - "docs/**"
+      - "examples/**"
       - "Project.toml"
+      - ".github/workflows/documentation.yml"
     tags: ["*"]
   pull_request:
+    paths: *paths
   workflow_dispatch:
 
 concurrency:
@@ -26,6 +29,8 @@ jobs:
       pull-requests: read
       statuses: write
     runs-on: ubuntu-latest
+    env:
+      JULIA_CPU_TARGET: x86-64-v3
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
