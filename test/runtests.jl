@@ -1,14 +1,17 @@
+using Pkg
+# LibAACGM is unregistered and `[sources]` needs Julia 1.11+
+Pkg.develop(PackageSpec(path = joinpath(@__DIR__, "..", "LibAACGM")))
+# prereleases often have no installable JET.
+const RUN_JET_TESTS = isempty(VERSION.prerelease)
+RUN_JET_TESTS && Pkg.add("JET")
+
 using TestItems, TestItemRunner
 
-@run_package_tests filter = ti -> !(:skipci in ti.tags)
-
-const RUN_JET_TESTS = isempty(VERSION.prerelease)
+@run_package_tests filter = ti -> !(:skipci in ti.tags) && (RUN_JET_TESTS || !(:jet in ti.tags))
 
 @testsnippet Share begin
-    using Pkg
     using Dates
     using Chairmarks
-    Pkg.develop(PackageSpec(path = "../LibAACGM"))
     using LibAACGM
 
     yr, mo, dy, hr, mt, sc = 2029, 3, 22, 3, 11, 0
@@ -50,12 +53,9 @@ end
     @info Base.summarysize(set_coefficients!(Date(2029))) |> Base.format_bytes
 end
 
-if RUN_JET_TESTS
-    using Pkg; Pkg.add("JET"); Pkg.instantiate()
-    @testitem "JET static analysis" begin
-        using JET
-        @test_call GeoAACGM.workload()
-    end
+@testitem "JET static analysis" tags = [:jet] begin
+    using JET
+    @test_call GeoAACGM.workload()
 end
 
 @testitem "Aqua" begin

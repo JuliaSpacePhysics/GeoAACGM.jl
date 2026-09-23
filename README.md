@@ -20,6 +20,20 @@ mlat, mlon, r = geoc2aacgm(glat, glon, height, dt)
 mlat, mlon, r = geod2aacgm(glat, glon, height, dt)
 ```
 
+## Magnetic local time
+
+MLT depends on the magnetic coordinate system, not just on position and time:
+
+```julia
+using GeoCotrans: get_mlt
+
+t = DateTime(2021, 4, 20, 0, 56)
+r = [1359.9, 2960.5, -5988.8]  # GEO [km], L≈7.2 nightside
+
+aacgm_mlt(r, t)  # 3.29 h, AACGM
+get_mlt(r, t)    # 4.39 h, centered dipole
+```
+
 ## What is AACGM?
 
 AACGM labels positions by magnetic field lines. Its reference definition traces field lines to dipole magnetic equator and uses corresponding dipole field-line label as magnetic latitude and longitude.
