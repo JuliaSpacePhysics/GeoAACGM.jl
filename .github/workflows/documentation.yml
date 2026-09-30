@@ -29,8 +29,6 @@ jobs:
       pull-requests: read
       statuses: write
     runs-on: ubuntu-latest
-    env:
-      JULIA_CPU_TARGET: x86-64-v3
     steps:
       - uses: actions/checkout@v6
       - uses: extractions/setup-just@v4
