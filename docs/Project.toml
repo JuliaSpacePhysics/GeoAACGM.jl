@@ -11,3 +11,12 @@ PrettyPrinting = "54e16d92-306c-5ea0-a30b-337be88ac337"
 
 [sources]
 LibAACGM = { path = "../LibAACGM" }
+
+[compat]
+CairoMakie = "0.15"
+Chairmarks = "1"
+Documenter = "1"
+DocumenterCitations = "1"
+GeoCotrans = "0.2.4, 0.3"
+OrdinaryDiffEqTsit5 = "2"
+PrettyPrinting = "0.4"
