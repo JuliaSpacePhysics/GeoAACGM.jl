@@ -37,8 +37,8 @@ using Dates
 using Dates: AbstractTime
 using LinearAlgebra
 using FixedSizeArrays
-using StaticArrays: SVector, MVector
-using SpaceDataModel: unwrap, getdim, tdimnum
+using StaticArrays: SA, SVector, MVector
+using TimeseriesUtilities: mapsamples, tdimnum, times
 using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
 using GeoCotrans: gei2geo, LinearInterp, calc_sun_gei
 
@@ -47,7 +47,6 @@ include("harmonics.jl")
 include("cotrans.jl")
 include("coefs.jl")
 include("mlt.jl")
-include("workload.jl")
 
 export geoc2aacgm, geod2aacgm
 export geod2geoc, geoc2geod
@@ -55,22 +54,24 @@ export aacgm2geoc, aacgm2geod
 export geo2aacgm, gei2aacgm
 export aacgm_mlt
 
-for op in (:geo2aacgm, :geod2aacgm, :aacgm2geoc, :aacgm2geod)
+"""
+    gei2aacgm(x, y, z, time)
+
+Convert `(x [km], y [km], z [km])` in GEI (Geocentric Equatorial Inertial) coordinates to
+`(mlat [deg], mlon [deg], r [Earth radii])` in AACGM coordinate.
+"""
+gei2aacgm(x, y, z, time) = geo2aacgm(gei2geo(SA[x, y, z], time)..., time)
+
+for op in (:geo2aacgm, :gei2aacgm, :geod2aacgm, :aacgm2geoc, :aacgm2geod)
     @eval $op(𝐫::AbstractVector, time) = SVector{3}($op(𝐫[1], 𝐫[2], 𝐫[3], time))
-    @eval $op(x; dim=nothing) = _geo2aacgm($op, x; dim)
+    @eval $op(A::AbstractMatrix; dim = nothing) = $op(A, times(A, dim); dim)
+    @eval $op(A::AbstractMatrix, times; dim = nothing) = mapsamples($op, A, times; dim = _sampledim(A, dim))
 end
 
-function _geo2aacgm(f, x; dim=nothing)
-    out = similar(x)
-    dims = @something dim tdimnum(x)
-    times = unwrap(getdim(x, dims))
-    map!(f, eachslice(out; dims), eachslice(x; dims), times)
-    return out
-end
+# plain matrices stack samples as columns; keyed containers (e.g. DimArray) declare their time dimension
+_sampledim(A, dim) = @something dim tdimnum(A) 2
 
-"Convert GEI (Geocentric Equatorial Inertial) coordinates to AACGM coordinates."
-function gei2aacgm end
-gei2aacgm(x; dim=nothing) = geo2aacgm(gei2geo(x); dim)
+include("workload.jl")
 
 end
 
