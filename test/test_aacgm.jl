@@ -78,3 +78,15 @@ end
     c_res = convert_geo_coord_v2(lat, lon, hgt)
     @test _approx(j_res[1:2], c_res, atol = 1.0e-4)
 end
+
+@testitem "batched input" begin
+    using Dates
+    using GeoCotrans: gei2geo
+    A = [4836.3 4900.0 4700.0; -2102.9 -2000.0 -2200.0; 5336.0 5300.0 5400.0]
+    ts = DateTime(1990) .+ Year.(0:10:20)  # distinct epochs, so a sample paired with the wrong time fails
+    expected = stack(geo2aacgm(A[:, i], ts[i]) for i in 1:3)
+    @test geo2aacgm(A, ts) ≈ expected
+    @test geo2aacgm(permutedims(A), ts; dim = 1) ≈ permutedims(expected)
+    @test geo2aacgm(A, ts[1]) ≈ stack(geo2aacgm(A[:, i], ts[1]) for i in 1:3)
+    @test gei2aacgm(A, ts) ≈ stack(geo2aacgm(gei2geo(A[:, i], ts[i]), ts[i]) for i in 1:3)
+end
