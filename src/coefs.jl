@@ -2,8 +2,8 @@
 # AACGM_v2_LoadCoefFP, AACGM_v2_LoadCoef, AACGM_v2_LoadCoefs
 export get_coefficients, set_coefficients!
 
-const geo2aacgm_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
-const aacgm2geo_coefs = Ref{FixedSizeArrayDefault{Float64, 3}}()
+const geo2aacgm_coefs = Ref{Array{Float64, 3}}()
+const aacgm2geo_coefs = Ref{Array{Float64, 3}}()
 
 """
     get_coefficient_path(year)
@@ -34,8 +34,8 @@ function load_coefficients(year)
     full_data = reshape(data, (AACGM_KMAX, NCOORD, POLYORD, 2))
 
     # Extract separate arrays for G2A and A2G conversions
-    g2a_data = FixedSizeArray(full_data[:, :, :, 1])
-    a2g_data = FixedSizeArray(full_data[:, :, :, 2])
+    g2a_data = full_data[:, :, :, 1]
+    a2g_data = full_data[:, :, :, 2]
 
     return g2a_data, a2g_data
 end
