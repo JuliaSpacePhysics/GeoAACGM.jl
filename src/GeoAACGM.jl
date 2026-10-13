@@ -36,7 +36,6 @@ module GeoAACGM
 using Dates
 using Dates: AbstractTime
 using LinearAlgebra
-using FixedSizeArrays
 using StaticArrays: SA, SVector, MVector
 using TimeseriesUtilities: mapsamples, tdimnum, times
 using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
