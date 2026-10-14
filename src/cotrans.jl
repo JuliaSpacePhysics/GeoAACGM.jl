@@ -39,7 +39,7 @@ function geoc2aacgm(lat, lon, height, coefs = geo2aacgm_coefs[]; order = nothing
     lon_rad = deg2rad(lon)
     colat_rad = deg2rad(90 - lat)
 
-    Yₗₘ = compute_harmonics!(S_cached, colat_rad, lon_rad, order)
+    Yₗₘ = compute_harmonics(colat_rad, lon_rad, order)
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 
@@ -101,7 +101,7 @@ function aacgm2geoc(mlat, mlon, r, coefs = aacgm2geo_coefs[]; order = nothing)
     lat_adj = aacgm2alt(height, mlat)
     colat_rad = deg2rad(90.0 - lat_adj)
 
-    Yₗₘ = compute_harmonics!(S_cached, colat_rad, lon_rad, order)
+    Yₗₘ = compute_harmonics(colat_rad, lon_rad, order)
     alt_var = height / MAXALT
     alt_powers = (one(alt_var), alt_var, alt_var^2, alt_var^3, alt_var^4)
 

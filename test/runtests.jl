@@ -24,27 +24,18 @@ using TestItems, TestItemRunner
 end
 
 @testitem "AACGM_v2_Rylm Comparison" setup = [Share] begin
-    using GeoAACGM: compute_harmonics!, compute_harmonics
-    using GeoAACGM.SphericalHarmonics
+    using GeoAACGM: compute_harmonics
     using LibAACGM: AACGM_v2_Rylm, AACGM_v2_Rylm!
     using Chairmarks
 
-    colat = deg2rad(35)  # 45 degrees in radians
-    lon = deg2rad(30)    # 30 degrees in radians
-    order = 10
-    S = SphericalHarmonics.cache(order, SphericalHarmonics.RealHarmonics())
-
-    # Call our Julia implementation
-    julia_results = compute_harmonics!(S, colat, lon, order)
+    for colat in (0.0, deg2rad(35), π / 2, π), lon in (-π, deg2rad(30), 3.0), order in (3, 10)
+        n = (order + 1)^2
+        Y = compute_harmonics(colat, lon, order)
+        @test Y[1:n] ≈ AACGM_v2_Rylm(colat, lon, order)[1:n] atol = 1.0e-14
+        @test all(iszero, Y[(n + 1):end])
+    end
+    colat, lon, order = deg2rad(35), deg2rad(30), 10
     c_results = AACGM_v2_Rylm(colat, lon, order)
-    # Compare the results
-    @test julia_results == compute_harmonics(colat, lon, order)
-    @test julia_results ≈ c_results
-    println.(
-        @b compute_harmonics!($S, $colat, $lon, $order),
-            compute_harmonics($colat, $lon, $order),
-            AACGM_v2_Rylm!($c_results, $colat, $lon, $order)
-    )
 end
 
 
