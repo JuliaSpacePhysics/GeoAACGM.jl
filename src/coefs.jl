@@ -40,18 +40,22 @@ function load_coefficients(year)
     return g2a_data, a2g_data
 end
 
+# Epoch boundaries; `coefs_lookup[i]` interpolates over [COEF_EPOCHS[i], COEF_EPOCHS[i + 1])
+const COEF_EPOCHS = DateTime.(1590:5:2030)
+
 const coefs_lookup = let
-    coefs = Dict(year => load_coefficients(year) for year in 1590:5:2030)
-    geo2aacgm_coefs[] = copy(coefs[1590][1])
-    aacgm2geo_coefs[] = copy(coefs[1590][2])
-    Dict(i => (coefs[i]..., (coefs[i + 5] .- coefs[i])...) for i in 1590:5:2025)
+    coefs = [load_coefficients(year(t)) for t in COEF_EPOCHS]
+    geo2aacgm_coefs[] = copy(coefs[1][1])
+    aacgm2geo_coefs[] = copy(coefs[1][2])
+    [(coefs[i]..., (coefs[i + 1] .- coefs[i])...) for i in 1:(length(coefs) - 1)]
 end
 
 function get_coefficients(time::DateTime)
-    epoch_year = (year(time) ÷ 5) * 5
-    next_epoch = epoch_year + 5
-    g2a0, a2g0, dg2a, da2g = coefs_lookup[epoch_year]
-    t0, tf = DateTime(epoch_year), DateTime(next_epoch)
+    i = searchsortedlast(COEF_EPOCHS, time)
+    checkbounds(Bool, coefs_lookup, i) ||
+        throw(DomainError(time, "AACGM coefficients cover [$(first(COEF_EPOCHS)), $(last(COEF_EPOCHS)))"))
+    g2a0, a2g0, dg2a, da2g = @inbounds coefs_lookup[i]
+    t0, tf = @inbounds COEF_EPOCHS[i], COEF_EPOCHS[i + 1]
     ratio = (time - t0) / (tf - t0)
     g2a = LinearInterp(g2a0, dg2a, ratio)
     a2g = LinearInterp(a2g0, da2g, ratio)
