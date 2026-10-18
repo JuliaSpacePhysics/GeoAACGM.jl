@@ -39,7 +39,7 @@ using LinearAlgebra
 using StaticArrays: SA, SVector, MVector
 using TimeseriesUtilities: mapsamples, tdimnum, times
 using GeoCotrans: gdz2sph, car2gdz, car2sphd, sphd2car, R🜨
-using GeoCotrans: gei2geo, LinearInterp, calc_sun_gei
+using GeoCotrans: gei2geo, LinearInterp, sun_gei
 
 include("constants.jl")
 include("harmonics.jl")

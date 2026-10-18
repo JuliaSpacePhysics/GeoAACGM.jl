@@ -2,7 +2,7 @@
     using Dates, GeoCotrans
     t = DateTime(2021, 4, 20, 0, 56)
     # subsolar point at 700 km is noon by definition; antipode is midnight
-    s = 7071.2 .* gei2geo(GeoCotrans.calc_sun_gei(t), t)
+    s = 7071.2 .* gei2geo(GeoCotrans.sun_gei(t), t)
     @test aacgm_mlt(s, t) ≈ 12 atol = 1e-6
     midnight = aacgm_mlt(-s, t)
     @test min(midnight, 24 - midnight) < 0.05

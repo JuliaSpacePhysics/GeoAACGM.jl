@@ -4,7 +4,7 @@
 # undefined near the equatorial surface, and AACGM longitude tends to centered-dipole
 # longitude with altitude, approaching the reference recommended by Laundal & Richmond (2017).
 function subsolar_mlon(time)
-    s = gei2geo(calc_sun_gei(time), time)
+    s = gei2geo(sun_gei(time), time)
     _, colat, lon = car2sphd(s[1], s[2], s[3])
     return geoc2aacgm(90 - colat, lon, 700.0, time)[2]
 end

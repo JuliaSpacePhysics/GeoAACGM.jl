@@ -16,7 +16,7 @@ TimeseriesUtilities = "31d49243-0742-49c1-b8d2-db113b74581e"
 
 [compat]
 Dates = "1"
-GeoCotrans = "0.2.4, 0.3"
+GeoCotrans = "0.3.6"
 LinearAlgebra = "1"
 PrecompileTools = "1.2"
 StaticArrays = "1.9"
